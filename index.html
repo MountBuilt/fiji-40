@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiji Fabulous 40 Planner</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; margin:0; padding:20px; }
+        .card { background: white; border-radius: 16px; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); padding: 20px; margin-bottom: 24px; }
+        .activity-card { border: 2px solid #e2e8f0; border-radius: 16px; padding: 16px; width: 280px; flex-shrink: 0; background: white; }
+        .activity-card:hover { border-color: #1e40af; }
+        .slot { display: flex; gap: 16px; overflow-x: auto; padding: 12px 0; scrollbar-width: thin; }
+        .selected { border-color: #1e40af; background: #eff6ff; }
+        .header { font-size: 1.5rem; font-weight: 700; color: #1e40af; margin: 20px 0 12px; }
+    </style>
+</head>
+<body>
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-2">Fiji Fabulous 40 Planner</h1>
+        <p class="text-center text-gray-600 mb-8">June 21–27 • Shangri-La Yanuca Island</p>
+
+        <!-- Family Select -->
+        <div class="card">
+            <label class="block font-medium mb-2">Select Your Family (Parent):</label>
+            <select id="family-select" class="w-full p-4 border rounded-2xl text-lg"></select>
+        </div>
+
+        <div id="main-content" class="hidden">
+            <button onclick="addActivity()" class="mb-6 bg-blue-700 text-white px-6 py-3 rounded-2xl font-medium">+ Add New Activity</button>
+
+            <div id="itinerary"></div>
+        </div>
+    </div>
+
+    <script>
+        // === REPLACE WITH YOUR FIREBASE CONFIG ===
+const firebaseConfig = {
+  apiKey: "AIzaSyCq7TFqj_Tdod_JJZrbxYY7cu2gEbpJlcg",
+  authDomain: "fiji-40.firebaseapp.com",
+  databaseURL: "https://fiji-40-default-rtdb.firebaseio.com",
+  projectId: "fiji-40",
+  storageBucket: "fiji-40.firebasestorage.app",
+  messagingSenderId: "742380008841",
+  appId: "1:742380008841:web:6c4ba42bfbdac4d90e9d58"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const ref = db.ref('fijiPlanner');
+
+        const families = [
+            {id: "dana", name: "Dana & Simon", members: ["Dana", "Simon", "Heidi", "Albert"]},
+            {id: "carly-tim", name: "Carly & Tim", members: ["Carly", "Tim", "Addy", "Teddy", "Elsie"]},
+            {id: "carly-matt", name: "Carly & Matt", members: ["Carly", "Matt", "Isla", "Noah"]},
+            {id: "jenny", name: "Jenny & Lucas", members: ["Jenny", "Lucas", "Neve", "Remy", "Bede"]},
+            {id: "nat", name: "Nat", members: ["Nat"]},
+            {id: "prue", name: "Prue & Clint", members: ["Prue", "Clint", "Pip", "Annabelle", "Henry"]}
+        ];
+
+        let currentFamily = null;
+        let data = { days: {} };
+
+        // Populate family select
+        function populateFamilies() {
+            const select = document.getElementById("family-select");
+            families.forEach(fam => {
+                const opt = document.createElement("option");
+                opt.value = fam.id;
+                opt.textContent = fam.name;
+                select.appendChild(opt);
+            });
+            select.onchange = () => {
+                currentFamily = families.find(f => f.id === select.value);
+                document.getElementById("main-content").classList.remove("hidden");
+            };
+        }
+
+        function renderItinerary() {
+            const container = document.getElementById("itinerary");
+            container.innerHTML = "";
+
+            const dates = Object.keys(data.days).sort();
+            dates.forEach(date => {
+                const dayData = data.days[date];
+                let html = `<div class="card"><div class="header">${date}</div>`;
+
+                ["Morning", "Afternoon", "Evening"].forEach(slot => {
+                    html += `<div class="header">${slot}</div><div class="slot">`;
+                    
+                    // Own Thing + Kids Club
+                    html += createSpecialCard(date, slot, "Own Thing / Free Time", true);
+                    html += createSpecialCard(date, slot, "Kids Club", false);
+
+                    // Regular activities
+                    if (dayData[slot]) {
+                        Object.keys(dayData[slot]).forEach(actId => {
+                            const act = dayData[slot][actId];
+                            html += createActivityCard(date, slot, actId, act);
+                        });
+                    }
+                    html += `</div>`;
+                });
+                html += `</div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function createSpecialCard(date, slot, label, isOwnThing) {
+            const key = isOwnThing ? 'ownThing' : 'kidsClub';
+            const checked = (data.days[date]?.[slot]?.[key] || []).includes(currentFamily?.id) ? "checked" : "";
+            return `
+                <div class="activity-card flex flex-col justify-between">
+                    <div class="font-semibold">${label}</div>
+                    <label class="mt-4 flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" ${checked} onchange="toggleSpecial('${date}', '${slot}', '${key}')">
+                        <span>My family</span>
+                    </label>
+                </div>`;
+        }
+
+        function createActivityCard(date, slot, actId, act) {
+            const attendees = act.attendees || [];
+            const familyAttending = attendees.filter(m => currentFamily.members.includes(m)).length;
+            const isChecked = familyAttending > 0;
+
+            let html = `<div class="activity-card ${isChecked ? 'selected' : ''}">`;
+            html += `<div class="font-semibold mb-2">${act.name}</div>`;
+            if (act.link) html += `<a href="${act.link}" target="_blank" class="text-blue-600 text-sm block mb-2">🔗 More Info</a>`;
+            html += `<div class="text-xs mb-3 ${act.needsBooking ? 'text-red-600' : 'text-green-600'}">${act.needsBooking ? 'Needs Booking' : 'No Booking Needed'}</div>`;
+
+            currentFamily.members.forEach(member => {
+                const checked = attendees.includes(member) ? "checked" : "";
+                html += `
+                    <label class="flex items-center gap-2 text-sm mb-1 cursor-pointer">
+                        <input type="checkbox" ${checked} onchange="toggleAttendee('${date}', '${slot}', '${actId}', '${member}')">
+                        ${member}
+                    </label>`;
+            });
+            html += `<button onclick="editActivity('${date}', '${slot}', '${actId}')" class="text-xs text-gray-500 mt-3">Edit</button>`;
+            html += `</div>`;
+            return html;
+        }
+
+        function toggleAttendee(date, slot, actId, member) {
+            ref.child(`days/${date}/${slot}/${actId}/attendees`).transaction(att => {
+                att = att || [];
+                if (att.includes(member)) return att.filter(m => m !== member);
+                else return [...att, member];
+            });
+        }
+
+        function toggleSpecial(date, slot, key) {
+            ref.child(`days/${date}/${slot}/${key}`).transaction(list => {
+                list = list || [];
+                if (list.includes(currentFamily.id)) return list.filter(id => id !== currentFamily.id);
+                else return [...list, currentFamily.id];
+            });
+        }
+
+        function addActivity() {
+            const date = prompt("Date (e.g. June 21):");
+            const slot = prompt("Slot (Morning / Afternoon / Evening):");
+            const name = prompt("Activity name:");
+            if (!date || !slot || !name) return;
+
+            const link = prompt("Link (optional):");
+            const needsBooking = confirm("Does this need booking?");
+
+            const actData = { name, link: link || "", needsBooking, attendees: [] };
+
+            ref.child(`days/${date}/${slot}`).push(actData);
+        }
+
+        function editActivity(date, slot, actId) {
+            const newName = prompt("New name:");
+            if (newName) {
+                ref.child(`days/${date}/${slot}/${actId}/name`).set(newName);
+            }
+        }
+
+        // Real-time listener
+        ref.on('value', snapshot => {
+            data = snapshot.val() || { days: {} };
+            renderItinerary();
+        });
+
+        // Init
+        window.onload = () => {
+            populateFamilies();
+        };
+    </script>
+</body>
+</html>
