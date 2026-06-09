@@ -393,7 +393,7 @@ const TYPE = { ACTIVITY:"activity", DINNER:"dinner", BOAT:"boat", FREE:"free" };
 // "own-thing" shown in all slots; "kids-club" added dynamically per slot
 const PERM_OWN_THING = {
   id:"own-thing", name:"Own Thing / Free Time",
-  notes:"Doing your own thing — add a note to propose something 🏖️",
+  notes:"Edit this note to propose something to the group \uD83C\uDFD6\uFE0F",
   isPermanent:true, type:TYPE.FREE,
 };
 const PERM_KIDS_CLUB = {
@@ -404,101 +404,100 @@ const PERM_KIDS_CLUB = {
 
 // ─────────────────────────────────────────────
 // SEED DATA
-// Full 7-day itinerary — written to Firebase once on first load.
-// Types: activity | dinner | boat | free
-// needsBooking: true = Simon needs to book, others need to RSVP
-// boatCap: integer = max RSVP count for boat charters
+// Verified schedule:
+// Backyard Grill = Tuesday & Thursday only (official Shangri-La source)
+// Sacred Flame Show = Monday & Friday only (official Shangri-La source)
+// Trip: Sun 21 - Sat 27 June 2025
 // ─────────────────────────────────────────────
 const SEED = {
   // Sunday 21 June — Arrival day
   jun21: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Arrivals & Check-in", notes:"Settle in, explore the resort 🏝️", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Arrivals & Check-in", notes:"Settle in, explore the resort \uD83C\uDFDD\uFE0F", needsBooking:false },
     ],
     afternoon: [
-      { type:TYPE.ACTIVITY, name:"Aqua Park — Inflatable Water Park", notes:"In the lagoon — rodeo slide, monkey bars, action tower. Biggest in Fiji 🤿", needsBooking:false },
-      { type:TYPE.ACTIVITY, name:"Hair Braiding", notes:"On-resort beach vendors — pay direct on the day 🪢\nConfirm with concierge on arrival for vendor schedule.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Aqua Park — Inflatable Water Park", notes:"In the lagoon — rodeo slide, monkey bars, action tower. Biggest in Fiji \uD83E\uDD3F Free for guests.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Hair Braiding", notes:"On-resort beach vendors — pay direct on the day \uD83E\uDEA2\nConfirm with concierge on arrival for vendor schedule.", needsBooking:false },
     ],
     evening: [
-      { type:TYPE.DINNER, name:"Beach Bar & Grill — Welcome Dinner", notes:"Kick off the trip together on the beachfront 🥂\nFreshly grilled meats, wine, live entertainment.\nRSVP: information.center@shangri-la.com or dial operator.", needsBooking:true },
+      { type:TYPE.DINNER, name:"Beach Bar & Grill — Welcome Dinner", notes:"First night together on the beachfront \uD83E\uDD42\nCasual drinks and dinner to kick off the trip.\nContact concierge to arrange.", needsBooking:true },
     ],
   },
-  // Monday 22 June
+  // Monday 22 June — Sacred Flame available but saving Friday for farewell
   jun22: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Snorkelling off the Beach", notes:"Coral reef directly off the lagoon beach 🐠\nFree — gear from the Sea Sports Centre.", needsBooking:false },
-      { type:TYPE.ACTIVITY, name:"Horse Riding", notes:"9am–5pm across Yanuca Island oceanfront trails. All ages & skill levels welcome 🐴\n💰 Adults: ~A$23 | Kids: ~A$12\nBook direct at the Sea Sports Centre on the day — no group booking needed.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Snorkelling off the Beach", notes:"Coral reef directly off the lagoon beach \uD83D\uDC20\nFree — gear from the Sea Sports Centre.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Horse Riding", notes:"9am-5pm across Yanuca Island oceanfront trails. All ages & skill levels welcome \uD83D\uDC34\n\uD83D\uDCB0 Adults: ~A$23 | Kids: ~A$12\nBook direct at the Sea Sports Centre on the day.", needsBooking:false },
     ],
     afternoon: [
-      { type:TYPE.ACTIVITY, name:"Aqua Park", notes:"Second session in the lagoon inflatable park 🌊", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Aqua Park", notes:"Another session in the lagoon inflatable park \uD83C\uDF0A", needsBooking:false },
       { type:TYPE.ACTIVITY, name:"Pool Basketball & Lagoon Swim", notes:"Lagoon Pool — 12pm daily", needsBooking:false },
     ],
     evening: [
-      { type:TYPE.DINNER, name:"Lagoon Terrace Dinner Buffet", notes:"Main resort restaurant. Nightly buffet with live cooking stations, great kids area & menu.\n💰 ~A$65 (~FJD 95) adults | ~A$33 (~FJD 48) kids\nReservation recommended — contact concierge.", needsBooking:true },
+      { type:TYPE.DINNER, name:"Lagoon Terrace Dinner Buffet", notes:"Main resort restaurant. Nightly buffet with live cooking stations, great kids area & dedicated kids menu.\n\uD83D\uDCB0 ~A$65 (~FJD 95) adults | ~A$33 (~FJD 48) kids\nReservation recommended — contact concierge.", needsBooking:true },
     ],
   },
-  // Tuesday 23 June
+  // Tuesday 23 June — Backyard Grill runs Tuesdays
   jun23: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Sigatoka River Safari", notes:"Jet boat up the Sigatoka River to an authentic Fijian village. Kava ceremony, village tour, traditional lunch, 360° spins 🛶\n💰 ~A$170 (~FJD 249) adults | ~A$86 (~FJD 125) kids 4–15 | Under 3 free\n⚠️ 20 person max per boat — we need 2 bookings.\nMorning departs ~8:45am. Book ASAP.", needsBooking:true, link:"https://sigatokariver.com/#book-now" },
+      { type:TYPE.ACTIVITY, name:"Sigatoka River Safari", notes:"Jet boat up the Sigatoka River to an authentic Fijian village. Kava ceremony, village tour, traditional lunch, 360 spins \uD83D\uDEF6\n\uD83D\uDCB0 ~A$170 (~FJD 249) adults | ~A$86 (~FJD 125) kids 4-15 | Under 3 free\n20 person max per boat — we need 2 bookings.\nMorning departs ~8:45am. Book ASAP.", needsBooking:true, link:"https://sigatokariver.com/#book-now" },
     ],
     afternoon: [
-      { type:TYPE.ACTIVITY, name:"Sigatoka River Safari (Afternoon Group)", notes:"Afternoon departs ~1:00pm. Second group if we split morning/arvo.\n💰 ~A$170 (~FJD 249) adults | ~A$86 (~FJD 125) kids 4–15\nBook at sigatokariver.com", needsBooking:true, link:"https://sigatokariver.com/#book-now" },
-      { type:TYPE.ACTIVITY, name:"Mini Golf (Putt-Putt)", notes:"18-hole resort course — all ages ⛳ Free or minimal cost. Near the Pro Shop.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Sigatoka River Safari (Afternoon Group)", notes:"Afternoon departs ~1:00pm. Second group if splitting morning/arvo.\n\uD83D\uDCB0 ~A$170 (~FJD 249) adults | ~A$86 (~FJD 125) kids 4-15\nBook at sigatokariver.com", needsBooking:true, link:"https://sigatokariver.com/#book-now" },
+      { type:TYPE.ACTIVITY, name:"Mini Golf (Putt-Putt)", notes:"18-hole resort course — all ages. Free or minimal cost. Near the Pro Shop.", needsBooking:false },
     ],
     evening: [
-      { type:TYPE.DINNER, name:"Takali Asian Kitchen", notes:"Asian à la carte sharing plates on the reef-view terrace. Dumplings, seafood curries, gin bar 🍜\n💰 ~A$17–27 (FJD 25–40) per person\nReservation recommended.", needsBooking:true },
+      { type:TYPE.DINNER, name:"Backyard Grill — Beach Bar & Grill", notes:"Runs every Tuesday 6-8pm on the beachfront BBQ. Freshly grilled meats, curated wine pairings, live duo entertainment.\n1 glass house wine/soft drink/juice included. Kids under 5 dine free.\n\uD83D\uDCB0 ~A$17-27 (FJD 25-40) per person\nRSVP: information.center@shangri-la.com or dial operator.", needsBooking:true },
     ],
   },
-  // Wednesday 24 June
+  // Wednesday 24 June — Golden Cowrie adults only, kids to Little Chiefs
   jun24: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Golf — 9-Hole Executive Course", notes:"Peter Thompson designed course on the island. Clubs for hire at the Pro Shop ⛳\nDress code: collared shirts, tailored shorts.\nBook: golf@yanucaisland.shangri-la.com", needsBooking:true },
-      { type:TYPE.ACTIVITY, name:"Kayak Mangrove Tour", notes:"Meet at Sea Sports Centre, 10am 🛶 Free resort activity.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Golf — 9-Hole Executive Course", notes:"Peter Thompson designed course on the island. Clubs for hire at the Pro Shop.\nDress code: collared shirts, tailored shorts.\nBook: golf@yanucaisland.shangri-la.com", needsBooking:true },
+      { type:TYPE.ACTIVITY, name:"Kayak Mangrove Tour", notes:"Meet at Sea Sports Centre, 10am. Free resort activity — Wednesday schedule.", needsBooking:false },
     ],
     afternoon: [
-      { type:TYPE.ACTIVITY, name:"Hydro Sports Fiji — Book Your Own", notes:"Jet ski hire, flyboarding, parasailing, scuba — book direct at the watersports desk or call ahead.\n📞 +679 777 4081\n🌐 hydrosportsfiji.com\n💰 Jet ski 15 min from A$107 | Flyboard 15 min A$130 | Scuba from A$165", needsBooking:false, link:"https://www.hydrosportsfiji.com/shangri-la/" },
-      { type:TYPE.ACTIVITY, name:"Tennis", notes:"Resort courts — 2 courts, racquets available. Free. Great for doubles 🎾", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Hydro Sports Fiji — Book Your Own", notes:"Jet ski hire, flyboarding, parasailing, scuba — book direct at the watersports desk or call ahead.\n+679 777 4081\nhydrosportsfiji.com\n\uD83D\uDCB0 Jet ski 15 min from A$107 | Flyboard 15 min A$130 | Scuba from A$165", needsBooking:false, link:"https://www.hydrosportsfiji.com/shangri-la/" },
+      { type:TYPE.ACTIVITY, name:"Tennis", notes:"Resort courts — 2 courts, racquets available. Free. Great for doubles.", needsBooking:false },
     ],
     evening: [
-      { type:TYPE.DINNER, name:"Backyard Grill — Beach Bar & Grill", notes:"Every Wednesday 6–8pm on the beachfront BBQ. Freshly grilled meats, curated wine pairings, live duo entertainment 🎸\n1 glass house wine/soft drink/juice included.\n💰 ~A$17–27 (FJD 25–40) per person. Kids under 5 dine free.\nRSVP: information.center@shangri-la.com or dial operator.", needsBooking:true },
+      { type:TYPE.DINNER, name:"Golden Cowrie Coastal Italian — Adults Only", notes:"Premium Italian dining with hand-made pasta, wood-fired pizza, fresh local seafood.\nAdults only evening — kids to Little Chiefs Club with resort nannies.\nReservation required — contact concierge.", needsBooking:true },
     ],
   },
-  // Thursday 25 June
+  // Thursday 25 June — Boat charter + Backyard Grill runs Thursdays
   jun25: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Chi, The Spa — Girls Morning 💆", notes:"Resort spa in secluded bures with ocean views.\nTraditional Fijian Bobo Massage (60 min): ~A$116\nJourney to Fiji (2hr massage + scrub): A$197 (~FJD 288)\nBook ahead — spots fill fast.\n📧 chiservice@yanucaisland.shangri-la.com", needsBooking:false, link:"https://www.shangri-la.com/yanucaisland/fijianresort/chi-the-spa/" },
-      { type:TYPE.ACTIVITY, name:"Helen's Spa", notes:"Walking distance from the resort. Local alternative to Chi — likely more affordable 💅\nConfirm with concierge on arrival.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Chi, The Spa — Girls Morning", notes:"Resort spa in secluded bures with ocean views. Book ahead — spots fill fast.\nTraditional Fijian Bobo Massage (60 min): ~A$116\nJourney to Fiji (2hr massage + scrub): A$197 (~FJD 288)\nchiservice@yanucaisland.shangri-la.com", needsBooking:false, link:"https://www.shangri-la.com/yanucaisland/fijianresort/chi-the-spa/" },
+      { type:TYPE.ACTIVITY, name:"Helen's Spa", notes:"Walking distance from the resort. Local alternative to Chi — likely more affordable.\nConfirm with concierge on arrival.", needsBooking:false },
     ],
     afternoon: [
-      { type:TYPE.BOAT, name:"Private Boat Charter — Coral Coast", notes:"4-hour catamaran charter direct from the resort lagoon. Snorkelling gear + fishing equipment included. Explore reefs, sandbars, Coral Coast 🌊\n💰 A$1,540 (~FJD 2,250) for the whole boat\n⚠️ Max 16 people. RSVP below — first 16 secure a spot.\nBook: +679 777 4081 or bookings@hydrosportsfiji.com\nBYO food & drinks (no glass).", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/boat-tour/", boatCap:16 },
+      { type:TYPE.BOAT, name:"Private Boat Charter — Coral Coast", notes:"4-hour catamaran charter from the resort lagoon. Snorkelling gear + fishing equipment included. Explore reefs, sandbars, Coral Coast.\n\uD83D\uDCB0 A$1,540 (~FJD 2,250) for the whole boat — split across the group.\nMax 16 people. RSVP below — first 16 secure a spot.\nConfirm departure time when booking (likely morning or early afternoon).\nBook: +679 777 4081 or bookings@hydrosportsfiji.com\nBYO food & drinks (no glass).", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/boat-tour/", boatCap:16 },
     ],
     evening: [
-      { type:TYPE.DINNER, name:"Golden Cowrie Coastal Italian — Adults Only", notes:"Premium Italian dining with hand-made pasta, wood-fired pizza, fresh local seafood 🍝\nAdults only evening — kids to Little Chiefs Club with resort nannies.\nReservation required — contact concierge.", needsBooking:true },
+      { type:TYPE.DINNER, name:"Backyard Grill — Beach Bar & Grill", notes:"Runs every Thursday 6-8pm on the beachfront BBQ. Freshly grilled meats, wine, live duo.\n1 glass house wine/soft drink included. Kids under 5 dine free.\n\uD83D\uDCB0 ~A$17-27 (FJD 25-40)\nRSVP: information.center@shangri-la.com", needsBooking:true },
     ],
   },
-  // Friday 26 June
+  // Friday 26 June — Sacred Flame runs Fridays — perfect farewell night
   jun26: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Golf — 9-Hole Executive Course", notes:"Peter Thompson designed course on the island. Clubs for hire at the Pro Shop ⛳\nDress code: collared shirts, tailored shorts.\nBook: golf@yanucaisland.shangri-la.com", needsBooking:true },
+      { type:TYPE.ACTIVITY, name:"Golf — 9-Hole Executive Course", notes:"Peter Thompson designed course on the island. Clubs for hire at the Pro Shop.\nDress code: collared shirts, tailored shorts.\nBook: golf@yanucaisland.shangri-la.com", needsBooking:true },
+      { type:TYPE.ACTIVITY, name:"Final Swim & Aqua Park", notes:"Last splash in the lagoon before the farewell night.", needsBooking:false },
     ],
     afternoon: [
-      { type:TYPE.ACTIVITY, name:"Hydro Sports Fiji — Book Your Own", notes:"Jet ski hire, flyboarding, parasailing, scuba, jet ski safari — book direct at the watersports desk or call ahead.\n📞 +679 777 4081\n🌐 hydrosportsfiji.com\n💰 Jet ski 15 min from A$107 | Flyboard 15 min A$130 | Scuba from A$165 | Jet Ski Safari 2.5hr — ask desk for pricing", needsBooking:false, link:"https://www.hydrosportsfiji.com/shangri-la/" },
-      { type:TYPE.ACTIVITY, name:"Touch Rugby & Beach Volleyball", notes:"Lagoon Lawn 3pm then Lagoon Beach 4pm — resort daily schedule 🏉🏐", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Hydro Sports Fiji — Book Your Own", notes:"Jet ski hire, flyboarding, parasailing, scuba, jet ski safari — book direct at the watersports desk or call ahead.\n+679 777 4081\nhydrosportsfiji.com\n\uD83D\uDCB0 Jet ski 15 min from A$107 | Flyboard 15 min A$130 | Scuba from A$165", needsBooking:false, link:"https://www.hydrosportsfiji.com/shangri-la/" },
+      { type:TYPE.ACTIVITY, name:"Touch Rugby & Beach Volleyball", notes:"Lagoon Lawn 3pm then Lagoon Beach 4pm — resort Friday schedule.", needsBooking:false },
     ],
     evening: [
-      { type:TYPE.DINNER, name:"Backyard Grill — Beach Bar & Grill", notes:"Every Thursday 6–8pm on the beachfront BBQ. Freshly grilled meats, wine, live duo 🎸\n1 glass house wine/soft drink included. Kids under 5 dine free.\n💰 ~A$17–27 (FJD 25–40)\nRSVP: information.center@shangri-la.com", needsBooking:true },
+      { type:TYPE.DINNER, name:"Sacred Flame Show & Lovo Dinner — Marau Village", notes:"The farewell night! Fire walking, meke dancing, traditional lovo feast.\nOn-site at the resort. Runs every Monday & Friday at 6pm.\n\uD83D\uDCB0 A$99 (~FJD 145) adults | A$50 (~FJD 73) kids under 16\nBook through resort concierge — numbers needed well in advance.\ninformation.center@shangri-la.com", needsBooking:true },
     ],
   },
-  // Saturday 27 June — Checkout day
+  // Saturday 27 June — Checkout day, no planned activities
   jun27: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Pack Up & Check Out", notes:"Checkout time — enjoy a last breakfast, pack up and say your goodbyes 👋\nCheck-out time: confirm with resort on arrival.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Pack Up & Check Out", notes:"Last breakfast, pack up and say your goodbyes.\nCheck-out time: confirm with resort on arrival.", needsBooking:false },
     ],
     afternoon: [],
-    evening: [
-      { type:TYPE.DINNER, name:"Marau Village — Sacred Flame Show & Lovo Dinner", notes:"On-site at the resort. Fire walking, meke dancing, traditional lovo feast 🔥\nRuns Monday & Friday evenings only.\n💰 A$99 (~FJD 145) adults | A$50 (~FJD 73) kids under 16\nBook through resort concierge — numbers needed in advance.", needsBooking:true },
-    ],
+    evening: [],
   },
 };
 
@@ -552,7 +551,7 @@ function attachFirebaseListener() {
   if (dbListener) dbListener();
   // We use a version flag so that if the DB has old/blank data from a
   // previous build, we wipe and reseed automatically.
-  const CURRENT_VERSION = 4;
+  const CURRENT_VERSION = 5;
 
   dbListener = onValue(plannerRef, (snapshot) => {
     setSyncStatus(true);
