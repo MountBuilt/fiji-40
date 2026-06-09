@@ -227,7 +227,28 @@
     .boat-cap-ok   { color: var(--gold);  background: var(--gold-light); }
     .boat-cap-full { color: var(--coral); background: var(--coral-light); }
 
-    /* Sync dot */
+    /* Attendee accordion */
+    .attendee-toggle {
+      display: flex; align-items: center; gap: 0.35rem; cursor: pointer;
+      font-size: 0.68rem; font-weight: 600; color: var(--palm);
+      background: var(--palm-light); border: none; border-radius: 2rem;
+      padding: 0.18rem 0.55rem; margin-top: 0.1rem; align-self: flex-start;
+      transition: background 0.15s;
+    }
+    .attendee-toggle:hover { background: #cdeedd; }
+    .attendee-toggle .toggle-arrow { font-size: 0.55rem; transition: transform 0.2s; }
+    .attendee-toggle.open .toggle-arrow { transform: rotate(180deg); }
+    .attendee-names-list {
+      display: none; flex-direction: column; gap: 0.15rem;
+      margin-top: 0.25rem; padding: 0.35rem 0.5rem;
+      background: rgba(255,255,255,0.6); border-radius: 0.5rem;
+      font-size: 0.7rem;
+    }
+    .attendee-names-list.open { display: flex; }
+    .attendee-name-chip {
+      color: #374151; line-height: 1.4;
+    }
+    .attendee-name-chip.is-parent { font-weight: 600; }
     .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; display: inline-block; margin-right: 0.35rem; animation: pulse-green 2s ease-in-out infinite; }
     @keyframes pulse-green { 0%,100%{opacity:1} 50%{opacity:0.4} }
     .sync-dot.offline { background: #f87171; animation: none; }
@@ -343,13 +364,13 @@ const FAMILIES = {
 // DAYS & SLOTS
 // ─────────────────────────────────────────────
 const DAYS = [
-  { id:"jun21", label:"Saturday",  date:"21 June",  dow:"Saturday" },
-  { id:"jun22", label:"Sunday",    date:"22 June",  dow:"Sunday"   },
-  { id:"jun23", label:"Monday",    date:"23 June",  dow:"Monday"   },
-  { id:"jun24", label:"Tuesday",   date:"24 June",  dow:"Tuesday"  },
-  { id:"jun25", label:"Wednesday", date:"25 June",  dow:"Wednesday"},
-  { id:"jun26", label:"Thursday",  date:"26 June",  dow:"Thursday" },
-  { id:"jun27", label:"Friday",    date:"27 June",  dow:"Friday"   },
+  { id:"jun21", label:"Sunday",    date:"21 June"  },
+  { id:"jun22", label:"Monday",    date:"22 June"  },
+  { id:"jun23", label:"Tuesday",   date:"23 June"  },
+  { id:"jun24", label:"Wednesday", date:"24 June"  },
+  { id:"jun25", label:"Thursday",  date:"25 June"  },
+  { id:"jun26", label:"Friday",    date:"26 June"  },
+  { id:"jun27", label:"Saturday",  date:"27 June"  },
 ];
 
 const SLOTS = [
@@ -389,31 +410,34 @@ const PERM_KIDS_CLUB = {
 // boatCap: integer = max RSVP count for boat charters
 // ─────────────────────────────────────────────
 const SEED = {
+  // Sunday 21 June — Arrival day
   jun21: {
     morning: [
       { type:TYPE.ACTIVITY, name:"Arrivals & Check-in", notes:"Settle in, explore the resort 🏝️", needsBooking:false },
     ],
     afternoon: [
       { type:TYPE.ACTIVITY, name:"Aqua Park — Inflatable Water Park", notes:"In the lagoon — rodeo slide, monkey bars, action tower. Biggest in Fiji 🤿", needsBooking:false },
-      { type:TYPE.ACTIVITY, name:"Beach Volleyball", notes:"Lagoon Beach, 4pm daily", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Hair Braiding", notes:"On-resort beach vendors — pay direct on the day 🪢\nConfirm with concierge on arrival for vendor schedule.", needsBooking:false },
     ],
     evening: [
-      { type:TYPE.DINNER, name:"Welcome Drinks — Bilo Bar", notes:"Kick off the trip together on the beach 🥂 Casual, no booking needed. Happy hour starts 4pm.", needsBooking:false },
+      { type:TYPE.DINNER, name:"Beach Bar & Grill — Welcome Dinner", notes:"Kick off the trip together on the beachfront 🥂\nFreshly grilled meats, wine, live entertainment.\nRSVP: information.center@shangri-la.com or dial operator.", needsBooking:true },
     ],
   },
+  // Monday 22 June
   jun22: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Snorkelling off the Beach", notes:"Coral reef directly off the lagoon beach 🐠 Free, gear from the Sea Sports Centre", needsBooking:false },
-      { type:TYPE.ACTIVITY, name:"Horse Riding", notes:"9am–5pm across Yanuca Island oceanfront trails. All ages & skill levels welcome 🐴\nAdults: ~A$23 | Kids: ~A$12\nBook at Sea Sports Centre", needsBooking:true },
+      { type:TYPE.ACTIVITY, name:"Snorkelling off the Beach", notes:"Coral reef directly off the lagoon beach 🐠\nFree — gear from the Sea Sports Centre.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Horse Riding", notes:"9am–5pm across Yanuca Island oceanfront trails. All ages & skill levels welcome 🐴\n💰 Adults: ~A$23 | Kids: ~A$12\nBook direct at the Sea Sports Centre on the day — no group booking needed.", needsBooking:false },
     ],
     afternoon: [
       { type:TYPE.ACTIVITY, name:"Aqua Park", notes:"Second session in the lagoon inflatable park 🌊", needsBooking:false },
       { type:TYPE.ACTIVITY, name:"Pool Basketball & Lagoon Swim", notes:"Lagoon Pool — 12pm daily", needsBooking:false },
     ],
     evening: [
-      { type:TYPE.DINNER, name:"Lagoon Terrace Dinner Buffet", notes:"Main resort restaurant. Nightly buffet with live cooking stations, great kids area & menu.\n💰 ~A$65 (~FJD 95) adults | ~A$33 (~FJD 48) kids\nReservation recommended — contact concierge.", needsBooking:true, link:"" },
+      { type:TYPE.DINNER, name:"Lagoon Terrace Dinner Buffet", notes:"Main resort restaurant. Nightly buffet with live cooking stations, great kids area & menu.\n💰 ~A$65 (~FJD 95) adults | ~A$33 (~FJD 48) kids\nReservation recommended — contact concierge.", needsBooking:true },
     ],
   },
+  // Tuesday 23 June
   jun23: {
     morning: [
       { type:TYPE.ACTIVITY, name:"Sigatoka River Safari", notes:"Jet boat up the Sigatoka River to an authentic Fijian village. Kava ceremony, village tour, traditional lunch, 360° spins 🛶\n💰 ~A$170 (~FJD 249) adults | ~A$86 (~FJD 125) kids 4–15 | Under 3 free\n⚠️ 20 person max per boat — we need 2 bookings.\nMorning departs ~8:45am. Book ASAP.", needsBooking:true, link:"https://sigatokariver.com/#book-now" },
@@ -426,55 +450,54 @@ const SEED = {
       { type:TYPE.DINNER, name:"Takali Asian Kitchen", notes:"Asian à la carte sharing plates on the reef-view terrace. Dumplings, seafood curries, gin bar 🍜\n💰 ~A$17–27 (FJD 25–40) per person\nReservation recommended.", needsBooking:true },
     ],
   },
+  // Wednesday 24 June
   jun24: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Jet Ski Hire — Hydro Sports Fiji", notes:"Hire direct from the lagoon watersports desk. Adults only for driving (16+ tandem, 18+ solo).\n💰 15 min solo A$107 | Tandem A$120\n30 min solo A$145 | Tandem A$170\nCall: +679 777 4081", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/jet-ski-hire-shangri-la/" },
-      { type:TYPE.ACTIVITY, name:"Kayak Mangrove Tour", notes:"Meet at Sea Sports Centre, 10am Tuesday schedule 🛶 Free resort activity.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Golf — 9-Hole Executive Course", notes:"Peter Thompson designed course on the island. Clubs for hire at the Pro Shop ⛳\nDress code: collared shirts, tailored shorts.\nBook: golf@yanucaisland.shangri-la.com", needsBooking:true },
+      { type:TYPE.ACTIVITY, name:"Kayak Mangrove Tour", notes:"Meet at Sea Sports Centre, 10am 🛶 Free resort activity.", needsBooking:false },
     ],
     afternoon: [
-      { type:TYPE.ACTIVITY, name:"Flyboarding — Hydro Sports Fiji", notes:"Hover above the water! Kids 8+ welcome 🚀\n💰 15 min: A$130 (~FJD 190) | 30 min: A$198 (~FJD 290)\nBook at watersports desk.", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/" },
+      { type:TYPE.ACTIVITY, name:"Hydro Sports Fiji — Book Your Own", notes:"Jet ski hire, flyboarding, parasailing, scuba — book direct at the watersports desk or call ahead.\n📞 +679 777 4081\n🌐 hydrosportsfiji.com\n💰 Jet ski 15 min from A$107 | Flyboard 15 min A$130 | Scuba from A$165", needsBooking:false, link:"https://www.hydrosportsfiji.com/shangri-la/" },
       { type:TYPE.ACTIVITY, name:"Tennis", notes:"Resort courts — 2 courts, racquets available. Free. Great for doubles 🎾", needsBooking:false },
     ],
     evening: [
-      { type:TYPE.DINNER, name:"Backyard Grill — Beach Bar & Grill", notes:"Every Tuesday 6–8pm on the beachfront BBQ. Freshly grilled meats, curated wine pairings, live duo entertainment 🎸\n1 glass house wine/soft drink/juice included.\n💰 ~A$17–27 (FJD 25–40) per person. Kids under 5 dine free.\nRSVP: information.center@shangri-la.com or dial operator.", needsBooking:true },
+      { type:TYPE.DINNER, name:"Backyard Grill — Beach Bar & Grill", notes:"Every Wednesday 6–8pm on the beachfront BBQ. Freshly grilled meats, curated wine pairings, live duo entertainment 🎸\n1 glass house wine/soft drink/juice included.\n💰 ~A$17–27 (FJD 25–40) per person. Kids under 5 dine free.\nRSVP: information.center@shangri-la.com or dial operator.", needsBooking:true },
     ],
   },
+  // Thursday 25 June
   jun25: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Chi, The Spa — Adults Morning", notes:"Resort spa in secluded bures with ocean views 💆\nTraditional Fijian Bobo Massage (60 min): ~A$116\nJourney to Fiji (2hr massage + scrub): A$197 (~FJD 288)\nDusk Til Dawn overnight bure experience also available.\nBook: chiservice@yanucaisland.shangri-la.com", needsBooking:true, link:"https://www.shangri-la.com/yanucaisland/fijianresort/chi-the-spa/" },
+      { type:TYPE.ACTIVITY, name:"Chi, The Spa — Girls Morning 💆", notes:"Resort spa in secluded bures with ocean views.\nTraditional Fijian Bobo Massage (60 min): ~A$116\nJourney to Fiji (2hr massage + scrub): A$197 (~FJD 288)\nBook ahead — spots fill fast.\n📧 chiservice@yanucaisland.shangri-la.com", needsBooking:false, link:"https://www.shangri-la.com/yanucaisland/fijianresort/chi-the-spa/" },
       { type:TYPE.ACTIVITY, name:"Helen's Spa", notes:"Walking distance from the resort. Local alternative to Chi — likely more affordable 💅\nConfirm with concierge on arrival.", needsBooking:false },
     ],
     afternoon: [
       { type:TYPE.BOAT, name:"Private Boat Charter — Coral Coast", notes:"4-hour catamaran charter direct from the resort lagoon. Snorkelling gear + fishing equipment included. Explore reefs, sandbars, Coral Coast 🌊\n💰 A$1,540 (~FJD 2,250) for the whole boat\n⚠️ Max 16 people. RSVP below — first 16 secure a spot.\nBook: +679 777 4081 or bookings@hydrosportsfiji.com\nBYO food & drinks (no glass).", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/boat-tour/", boatCap:16 },
-      { type:TYPE.ACTIVITY, name:"Golf — 9-Hole Executive Course", notes:"Peter Thompson designed course on the island. Clubs for hire at the Pro Shop ⛳\nDress code: collared shirts, tailored shorts.\nBook: golf@yanucaisland.shangri-la.com", needsBooking:true },
     ],
     evening: [
       { type:TYPE.DINNER, name:"Golden Cowrie Coastal Italian — Adults Only", notes:"Premium Italian dining with hand-made pasta, wood-fired pizza, fresh local seafood 🍝\nAdults only evening — kids to Little Chiefs Club with resort nannies.\nReservation required — contact concierge.", needsBooking:true },
     ],
   },
+  // Friday 26 June
   jun26: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Parasailing — Hydro Sports Fiji", notes:"Soar above the Coral Coast 🪂 15-min flights, max 200kg per flight.\nPricing via booking request — contact watersports desk.", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/parasailing-shangri-la/" },
-      { type:TYPE.ACTIVITY, name:"Scuba Diving — Hydro Sports Fiji", notes:"Reef wall and shark observation dives 🦈 Ages 10+\n💰 From ~A$165 per person\nBook: hydrosportsfiji.com or FareHarbor link", needsBooking:true, link:"https://www.hydrosportsfiji.com/scuba-diving/" },
+      { type:TYPE.ACTIVITY, name:"Golf — 9-Hole Executive Course", notes:"Peter Thompson designed course on the island. Clubs for hire at the Pro Shop ⛳\nDress code: collared shirts, tailored shorts.\nBook: golf@yanucaisland.shangri-la.com", needsBooking:true },
     ],
     afternoon: [
-      { type:TYPE.ACTIVITY, name:"Jet Ski Safari Tour — 2.5hrs", notes:"Full safari out to the reef with snorkelling included 🚤 Drivers 16+ (tandem) or 18+ (solo).\nContact watersports desk for pricing.\nCall: +679 777 4081", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/jet-ski-safari-tours/" },
+      { type:TYPE.ACTIVITY, name:"Hydro Sports Fiji — Book Your Own", notes:"Jet ski hire, flyboarding, parasailing, scuba, jet ski safari — book direct at the watersports desk or call ahead.\n📞 +679 777 4081\n🌐 hydrosportsfiji.com\n💰 Jet ski 15 min from A$107 | Flyboard 15 min A$130 | Scuba from A$165 | Jet Ski Safari 2.5hr — ask desk for pricing", needsBooking:false, link:"https://www.hydrosportsfiji.com/shangri-la/" },
       { type:TYPE.ACTIVITY, name:"Touch Rugby & Beach Volleyball", notes:"Lagoon Lawn 3pm then Lagoon Beach 4pm — resort daily schedule 🏉🏐", needsBooking:false },
     ],
     evening: [
       { type:TYPE.DINNER, name:"Backyard Grill — Beach Bar & Grill", notes:"Every Thursday 6–8pm on the beachfront BBQ. Freshly grilled meats, wine, live duo 🎸\n1 glass house wine/soft drink included. Kids under 5 dine free.\n💰 ~A$17–27 (FJD 25–40)\nRSVP: information.center@shangri-la.com", needsBooking:true },
     ],
   },
+  // Saturday 27 June — Checkout day
   jun27: {
     morning: [
-      { type:TYPE.ACTIVITY, name:"Final Swim & Aqua Park", notes:"Last splash before checkout 🌊 Make it count!", needsBooking:false },
-      { type:TYPE.ACTIVITY, name:"Hair Braiding", notes:"On-resort beach vendors — pay direct on the day 🪢\nConfirm with concierge on arrival for vendor schedule.", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Pack Up & Check Out", notes:"Checkout time — enjoy a last breakfast, pack up and say your goodbyes 👋\nCheck-out time: confirm with resort on arrival.", needsBooking:false },
     ],
-    afternoon: [
-      { type:TYPE.ACTIVITY, name:"Check-out & Transfers", notes:"Safe travels everyone ✈️", needsBooking:false },
-    ],
+    afternoon: [],
     evening: [
-      { type:TYPE.DINNER, name:"Marau Village — Sacred Flame Show & Lovo Dinner", notes:"On-site at the resort. Fire walking, meke dancing, traditional lovo feast 🔥\nRuns Monday & Friday evenings — the perfect farewell night!\n💰 A$99 (~FJD 145) adults | A$50 (~FJD 73) kids under 16\nBook through resort concierge — numbers needed in advance.", needsBooking:true },
+      { type:TYPE.DINNER, name:"Marau Village — Sacred Flame Show & Lovo Dinner", notes:"On-site at the resort. Fire walking, meke dancing, traditional lovo feast 🔥\nRuns Monday & Friday evenings only.\n💰 A$99 (~FJD 145) adults | A$50 (~FJD 73) kids under 16\nBook through resort concierge — numbers needed in advance.", needsBooking:true },
     ],
   },
 };
@@ -529,7 +552,7 @@ function attachFirebaseListener() {
   if (dbListener) dbListener();
   // We use a version flag so that if the DB has old/blank data from a
   // previous build, we wipe and reseed automatically.
-  const CURRENT_VERSION = 3;
+  const CURRENT_VERSION = 4;
 
   dbListener = onValue(plannerRef, (snapshot) => {
     setSyncStatus(true);
@@ -763,23 +786,19 @@ function buildCard(dayId, slotId, actId, act, isPermanent) {
   const members  = [...fam.parents, ...fam.kids];
   const isBoat   = cardType === TYPE.BOAT && !isPermanent;
   const boatCap  = act.boatCap || 16;
-
-  // Count total current attendance across all families
   const totalCount = countAttendance(act.attendance);
 
   for (const member of members) {
     const key       = `${currentFamily}__${member}`;
     const isChecked = !!(act.attendance && act.attendance[key]);
     const isParent  = fam.parents.includes(member);
-
-    // For boat: if cap reached and this person isn't already checked, disable
     const atCap     = isBoat && totalCount >= boatCap && !isChecked;
 
-    const row  = document.createElement('div');
+    const row = document.createElement('div');
     row.className = 'attendee-row';
 
-    const chk  = document.createElement('input');
-    chk.type   = 'checkbox';
+    const chk = document.createElement('input');
+    chk.type      = 'checkbox';
     chk.className = 'attendee-check';
     chk.checked   = isChecked;
     chk.disabled  = atCap;
@@ -802,20 +821,46 @@ function buildCard(dayId, slotId, actId, act, isPermanent) {
   }
   card.appendChild(attendeesEl);
 
-  // ── Total / Boat cap badge ──
+  // ── Total / boat cap badge + accordion of who's going ──
+  // Build the list of all checked-in people across all families
+  const goingNames = buildGoingNames(act.attendance);
+
   if (isBoat) {
-    const capBadge = document.createElement('div');
     const full = totalCount >= boatCap;
+    const capBadge = document.createElement('div');
     capBadge.className = `boat-cap-badge ${full ? 'boat-cap-full' : 'boat-cap-ok'}`;
     capBadge.textContent = full
-      ? `⛵ FULL — ${totalCount}/${boatCap} spots taken`
+      ? `⛵ FULL — ${totalCount}/${boatCap} spots`
       : `⛵ ${totalCount}/${boatCap} spots taken`;
     card.appendChild(capBadge);
-  } else {
-    const totalBadge = document.createElement('div');
-    totalBadge.className = `card-total-badge${totalCount === 0 ? ' zero' : ''}`;
-    totalBadge.textContent = totalCount === 0 ? 'No one yet' : `${totalCount} going`;
-    card.appendChild(totalBadge);
+  }
+
+  if (totalCount > 0) {
+    const toggle = document.createElement('button');
+    toggle.className = 'attendee-toggle';
+    toggle.innerHTML = `${totalCount} going <span class="toggle-arrow">▼</span>`;
+
+    const namesList = document.createElement('div');
+    namesList.className = 'attendee-names-list';
+    goingNames.forEach(({ name, isParent }) => {
+      const chip = document.createElement('div');
+      chip.className = `attendee-name-chip${isParent ? ' is-parent' : ''}`;
+      chip.textContent = name;
+      namesList.appendChild(chip);
+    });
+
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      namesList.classList.toggle('open');
+    });
+
+    card.appendChild(toggle);
+    card.appendChild(namesList);
+  } else if (!isBoat) {
+    const zeroBadge = document.createElement('div');
+    zeroBadge.className = 'card-total-badge zero';
+    zeroBadge.textContent = 'No one yet';
+    card.appendChild(zeroBadge);
   }
 
   return card;
@@ -824,6 +869,27 @@ function buildCard(dayId, slotId, actId, act, isPermanent) {
 function countAttendance(attendance) {
   if (!attendance) return 0;
   return Object.values(attendance).filter(Boolean).length;
+}
+
+// Build a sorted list of names who are going, across all families
+function buildGoingNames(attendance) {
+  if (!attendance) return [];
+  const result = [];
+  for (const [key, val] of Object.entries(attendance)) {
+    if (!val) continue;
+    const [famId, memberName] = key.split('__');
+    const fam = FAMILIES[famId];
+    if (!fam) continue;
+    const isParent = fam.parents.includes(memberName);
+    result.push({ name: memberName, isParent, famLabel: fam.label });
+  }
+  // Sort: parents first, then kids, alphabetical within each
+  result.sort((a, b) => {
+    if (a.isParent && !b.isParent) return -1;
+    if (!a.isParent && b.isParent) return 1;
+    return a.name.localeCompare(b.name);
+  });
+  return result;
 }
 
 function autoResize(el) {
