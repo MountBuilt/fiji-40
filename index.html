@@ -464,7 +464,7 @@ const SEED = {
       { type:TYPE.DINNER, name:"Golden Cowrie Coastal Italian — Adults Only", notes:"Premium Italian dining with hand-made pasta, wood-fired pizza, fresh local seafood.\nAdults only evening — kids to Little Chiefs Club with resort nannies.\nReservation required — contact concierge.", needsBooking:true },
     ],
   },
-  // Thursday 25 June — Boat charter + Backyard Grill runs Thursdays
+  // Thursday 25 June — Boat charter + Takali Asian Kitchen
   jun25: {
     morning: [
       { type:TYPE.ACTIVITY, name:"Chi, The Spa — Girls Morning", notes:"Resort spa in secluded bures with ocean views. Book ahead — spots fill fast.\nTraditional Fijian Bobo Massage (60 min): ~A$116\nJourney to Fiji (2hr massage + scrub): A$197 (~FJD 288)\nchiservice@yanucaisland.shangri-la.com", needsBooking:false, link:"https://www.shangri-la.com/yanucaisland/fijianresort/chi-the-spa/" },
@@ -474,7 +474,7 @@ const SEED = {
       { type:TYPE.BOAT, name:"Private Boat Charter — Coral Coast", notes:"4-hour catamaran charter from the resort lagoon. Snorkelling gear + fishing equipment included. Explore reefs, sandbars, Coral Coast.\n\uD83D\uDCB0 A$1,540 (~FJD 2,250) for the whole boat — split across the group.\nMax 16 people. RSVP below — first 16 secure a spot.\nConfirm departure time when booking (likely morning or early afternoon).\nBook: +679 777 4081 or bookings@hydrosportsfiji.com\nBYO food & drinks (no glass).", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/boat-tour/", boatCap:16 },
     ],
     evening: [
-      { type:TYPE.DINNER, name:"Backyard Grill — Beach Bar & Grill", notes:"Runs every Thursday 6-8pm on the beachfront BBQ. Freshly grilled meats, wine, live duo.\n1 glass house wine/soft drink included. Kids under 5 dine free.\n\uD83D\uDCB0 ~A$17-27 (FJD 25-40)\nRSVP: information.center@shangri-la.com", needsBooking:true },
+      { type:TYPE.DINNER, name:"Takali Asian Kitchen", notes:"Asian a la carte sharing plates on the reef-view terrace. Dumplings, seafood curries, gin bar.\n\uD83D\uDCB0 ~A$17-27 (FJD 25-40) per person\nReservation recommended — contact concierge.", needsBooking:true },
     ],
   },
   // Friday 26 June — Sacred Flame runs Fridays — perfect farewell night
@@ -551,7 +551,7 @@ function attachFirebaseListener() {
   if (dbListener) dbListener();
   // We use a version flag so that if the DB has old/blank data from a
   // previous build, we wipe and reseed automatically.
-  const CURRENT_VERSION = 5;
+  const CURRENT_VERSION = 6;
 
   dbListener = onValue(plannerRef, (snapshot) => {
     setSyncStatus(true);
@@ -644,7 +644,7 @@ function renderPlanner() {
       }, true));
 
       // Kids Club: always in evening; also pre-filled on Wednesday evening
-      const isWedEvening = (day.id === 'jun25' && slot.id === 'evening');
+      const isWedEvening = (day.id === 'jun24' && slot.id === 'evening');
       if (slot.id === 'evening' || isWedEvening) {
         row.appendChild(buildCard(day.id, slot.id, PERM_KIDS_CLUB.id, {
           ...PERM_KIDS_CLUB,
