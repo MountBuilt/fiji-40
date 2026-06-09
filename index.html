@@ -526,11 +526,16 @@ function showApp() {
 function attachFirebaseListener() {
   const plannerRef = ref(db, 'fijiPlanner');
   if (dbListener) dbListener();
+  // We use a version flag so that if the DB has old/blank data from a
+  // previous build, we wipe and reseed automatically.
+  const CURRENT_VERSION = 3;
+
   dbListener = onValue(plannerRef, (snapshot) => {
     setSyncStatus(true);
     const data = snapshot.val();
-    if (!data || Object.keys(data).length === 0) {
-      seedDatabase();
+    const version = data?._version || 0;
+    if (!data || version < CURRENT_VERSION) {
+      seedDatabase(CURRENT_VERSION);
     } else {
       plannerData = data;
       renderPlanner();
@@ -545,8 +550,8 @@ function setSyncStatus(online) {
   lbl.textContent = online ? 'Live' : 'Offline';
 }
 
-async function seedDatabase() {
-  const writes = {};
+async function seedDatabase(version) {
+  const writes = { _version: version };
   for (const day of DAYS) {
     writes[day.id] = {};
     for (const slot of SLOTS) {
