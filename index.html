@@ -4,612 +4,279 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fiji Fabulous 40 Planner</title>
-
-  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Google Fonts: Playfair Display (display) + Inter (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-
   <style>
     :root {
-      --ocean:   #1a6b8a;   /* deep lagoon blue  */
-      --sand:    #f5ede0;   /* warm sand         */
-      --palm:    #2d7d4f;   /* tropical green    */
-      --coral:   #e05c3a;   /* sunset coral      */
-      --sky:     #e8f4f8;   /* pale sky fill     */
-      --dusk:    #7b4f3a;   /* warm dusk brown   */
-      --white:   #ffffff;
-      --text:    #1a1a1a;
-      --muted:   #6b7280;
+      --ocean:      #1a6b8a;
+      --ocean-dark: #0d4f6e;
+      --sand:       #f5ede0;
+      --palm:       #2d7d4f;
+      --palm-light: #e6f4ec;
+      --coral:      #e05c3a;
+      --coral-light:#fff0eb;
+      --sky:        #e8f4f8;
+      --sky-dark:   #d0e8f0;
+      --dusk:       #5c3d6e;
+      --dusk-light: #f0eaf6;
+      --gold:       #c8860a;
+      --gold-light: #fdf3e0;
+      --white:      #ffffff;
+      --text:       #1a1a1a;
+      --muted:      #6b7280;
+      --border:     #e5e7eb;
     }
-
     * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--sand); color: var(--text); min-height: 100vh; }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--sand);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* ── WELCOME SCREEN ── */
+    /* ── WELCOME ── */
     #welcome-screen {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
       background: linear-gradient(160deg, #0d4f6e 0%, #1a6b8a 40%, #2d7d4f 100%);
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
+      padding: 2rem; position: relative; overflow: hidden;
     }
-
-    /* Signature element: animated wave rings behind the title */
     #welcome-screen::before {
-      content: '';
-      position: absolute;
-      width: 600px; height: 600px;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 50%;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
+      content: ''; position: absolute; width: 600px; height: 600px;
+      border: 1px solid rgba(255,255,255,0.07); border-radius: 50%;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
       animation: ripple 6s ease-in-out infinite;
     }
     #welcome-screen::after {
-      content: '';
-      position: absolute;
-      width: 900px; height: 900px;
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 50%;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
+      content: ''; position: absolute; width: 900px; height: 900px;
+      border: 1px solid rgba(255,255,255,0.04); border-radius: 50%;
+      top: 50%; left: 50%; transform: translate(-50%,-50%);
       animation: ripple 6s ease-in-out infinite 1.5s;
     }
-
     @keyframes ripple {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-      50%       { transform: translate(-50%, -50%) scale(1.05); opacity: 0.5; }
+      0%,100% { transform: translate(-50%,-50%) scale(1); opacity:1; }
+      50%      { transform: translate(-50%,-50%) scale(1.05); opacity:0.4; }
     }
-
     .welcome-card {
-      background: rgba(255,255,255,0.10);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 1.5rem;
-      padding: 2.5rem 2rem;
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-      position: relative;
-      z-index: 1;
+      background: rgba(255,255,255,0.11); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.18); border-radius: 1.5rem;
+      padding: 2.5rem 2rem; max-width: 420px; width: 100%;
+      text-align: center; position: relative; z-index: 1;
     }
-
-    .welcome-palm {
-      font-size: 2.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .welcome-title {
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      font-size: clamp(1.6rem, 5vw, 2.2rem);
-      color: #ffffff;
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
-    }
-
-    .welcome-subtitle {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.7);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 2rem;
-    }
-
-    .welcome-label {
-      display: block;
-      text-align: left;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 0.5rem;
-    }
-
+    .welcome-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: clamp(1.6rem,5vw,2.1rem); color: #fff; line-height: 1.2; margin-bottom: 0.4rem; }
+    .welcome-subtitle { font-size: 0.82rem; color: rgba(255,255,255,0.65); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2rem; }
+    .welcome-label { display: block; text-align: left; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 0.45rem; }
     .welcome-select {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border-radius: 0.75rem;
-      border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(255,255,255,0.15);
-      color: #ffffff;
-      font-size: 1rem;
-      font-family: 'Inter', sans-serif;
-      appearance: none;
-      cursor: pointer;
-      margin-bottom: 1.25rem;
-      outline: none;
+      width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.14);
+      color: #fff; font-size: 1rem; font-family: 'Inter',sans-serif;
+      appearance: none; cursor: pointer; margin-bottom: 1.25rem; outline: none;
       transition: background 0.2s, border 0.2s;
     }
     .welcome-select:focus { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.5); }
     .welcome-select option { background: #1a6b8a; color: white; }
-
     .welcome-btn {
-      width: 100%;
-      padding: 0.85rem;
-      border-radius: 0.75rem;
-      background: var(--coral);
-      color: white;
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.15s, background 0.2s;
-      letter-spacing: 0.02em;
+      width: 100%; padding: 0.85rem; border-radius: 0.75rem; background: var(--coral);
+      color: white; font-size: 1rem; font-weight: 600; border: none; cursor: pointer;
+      transition: transform 0.15s, background 0.2s; letter-spacing: 0.02em;
     }
     .welcome-btn:hover  { background: #c94e2e; transform: translateY(-1px); }
     .welcome-btn:active { transform: translateY(0); }
 
-    /* ── MAIN APP ── */
+    /* ── APP HEADER ── */
     #app { display: none; }
-
     .app-header {
       background: linear-gradient(135deg, #0d4f6e 0%, #1a6b8a 100%);
-      color: white;
-      padding: 1rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      color: white; padding: 1rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 12px rgba(0,0,0,0.2);
     }
-
-    .app-header-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1rem, 3vw, 1.3rem);
-      font-weight: 700;
-      line-height: 1.2;
-    }
-    .app-header-subtitle {
-      font-size: 0.72rem;
-      opacity: 0.7;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
+    .app-header-title { font-family: 'Playfair Display',serif; font-size: clamp(1rem,3vw,1.3rem); font-weight: 700; line-height: 1.2; }
+    .app-header-subtitle { font-size: 0.7rem; opacity: 0.68; letter-spacing: 0.05em; text-transform: uppercase; }
     .family-badge {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 2rem;
-      padding: 0.35rem 0.85rem;
-      font-size: 0.78rem;
-      font-weight: 600;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: background 0.2s;
+      background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.24);
+      border-radius: 2rem; padding: 0.35rem 0.85rem; font-size: 0.78rem; font-weight: 600;
+      white-space: nowrap; cursor: pointer; transition: background 0.2s;
     }
-    .family-badge:hover { background: rgba(255,255,255,0.25); }
+    .family-badge:hover { background: rgba(255,255,255,0.24); }
 
-    /* ── DAY SECTIONS ── */
+    /* ── DAY CARD ── */
     .day-section {
-      margin: 1.25rem 0;
-      border-radius: 1rem;
-      overflow: hidden;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
-      background: white;
-      margin-left: 0.75rem;
-      margin-right: 0.75rem;
+      margin: 1.25rem 0.75rem; border-radius: 1rem;
+      overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,0.08); background: white;
     }
-
     .day-header {
-      background: linear-gradient(90deg, var(--ocean) 0%, #236e8c 100%);
-      color: white;
-      padding: 0.85rem 1.25rem;
-      display: flex;
-      align-items: baseline;
-      gap: 0.6rem;
+      background: linear-gradient(90deg, var(--ocean-dark) 0%, var(--ocean) 100%);
+      color: white; padding: 0.85rem 1.25rem;
+      display: flex; align-items: baseline; gap: 0.6rem;
     }
+    .day-name { font-family: 'Playfair Display',serif; font-size: 1.15rem; font-weight: 700; }
+    .day-date { font-size: 0.75rem; opacity: 0.68; text-transform: uppercase; letter-spacing: 0.06em; }
 
-    .day-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-    }
-    .day-date {
-      font-size: 0.78rem;
-      opacity: 0.7;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    /* ── SLOT (Morning / Afternoon / Evening) ── */
-    .slot-section { border-top: 1px solid #f0f0f0; }
-
+    /* ── SLOT ROW ── */
+    .slot-section { border-top: 1px solid var(--border); }
     .slot-header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.65rem 1.25rem 0.5rem;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.6rem 1.25rem 0.4rem;
     }
+    .slot-header-left { display: flex; align-items: center; gap: 0.45rem; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .slot-emoji { font-size: 0.95rem; }
+    .add-card-btn-inline {
+      font-size: 0.7rem; font-weight: 600; color: var(--ocean); background: var(--sky);
+      border: none; border-radius: 1rem; padding: 0.2rem 0.65rem; cursor: pointer;
+      transition: background 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .add-card-btn-inline:hover { background: var(--sky-dark); }
 
-    .slot-emoji { font-size: 1rem; }
-
+    /* Cards row */
     .slot-cards-row {
-      display: flex;
-      flex-direction: row;
-      gap: 0.75rem;
-      overflow-x: auto;
-      padding: 0 1.25rem 1rem;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
+      display: flex; flex-direction: row; gap: 0.75rem;
+      overflow-x: auto; padding: 0 1.25rem 1rem;
+      scrollbar-width: none; -webkit-overflow-scrolling: touch;
     }
     .slot-cards-row::-webkit-scrollbar { display: none; }
 
-    /* Add card button */
-    .add-card-btn {
-      flex-shrink: 0;
-      width: 140px;
-      min-height: 140px;
-      border-radius: 0.875rem;
-      border: 2px dashed #d1d5db;
-      background: transparent;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.35rem;
-      color: #9ca3af;
-      font-size: 0.78rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
-    }
-    .add-card-btn:hover { border-color: var(--ocean); color: var(--ocean); background: var(--sky); }
-    .add-card-btn-icon { font-size: 1.4rem; }
-
-    /* ── ACTIVITY CARD ── */
+    /* ── CARD BASE ── */
     .activity-card {
-      flex-shrink: 0;
-      width: 200px;
-      border-radius: 0.875rem;
-      background: var(--sky);
-      border: 1.5px solid #dbeaf0;
-      padding: 0.85rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      position: relative;
-      transition: box-shadow 0.2s;
+      flex-shrink: 0; width: 210px; border-radius: 0.875rem;
+      border: 1.5px solid var(--border); padding: 0.85rem;
+      display: flex; flex-direction: column; gap: 0.45rem;
+      position: relative; transition: box-shadow 0.2s;
+      background: white;
     }
-    .activity-card:hover { box-shadow: 0 4px 16px rgba(26,107,138,0.12); }
+    .activity-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
 
-    .activity-card.needs-booking {
-      border-color: var(--coral);
-      background: #fff7f5;
+    /* Card type colours */
+    .card-type-activity { background: var(--sky);        border-color: #b8d8e8; }
+    .card-type-dinner   { background: var(--dusk-light); border-color: #c9b4dc; }
+    .card-type-free     { background: #f8f8f8;           border-color: #e0e0e0; }
+    .card-type-boat     { background: var(--gold-light);  border-color: #e0b86a; }
+
+    /* Needs booking highlight overrides border colour */
+    .needs-booking { border-color: var(--coral) !important; }
+
+    /* Type pill at top of card */
+    .card-type-pill {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      border-radius: 2rem; padding: 0.1rem 0.5rem; align-self: flex-start; margin-bottom: 0.1rem;
     }
+    .pill-activity { background: #c5e4f0; color: var(--ocean-dark); }
+    .pill-dinner   { background: #d9c8ec; color: var(--dusk); }
+    .pill-free     { background: #e5e5e5; color: #555; }
+    .pill-boat     { background: #fce0a0; color: var(--gold); }
+    .pill-permanent{ background: #c4e8d0; color: var(--palm); }
 
-    .activity-card.is-permanent {
-      background: #f0faf4;
-      border-color: #a7d9b8;
-    }
-
-    .card-top-row {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.25rem;
-    }
-
+    /* Card top row */
+    .card-top-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.25rem; }
     .card-name {
-      font-weight: 600;
-      font-size: 0.875rem;
-      line-height: 1.3;
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text);
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-      resize: none;
-      overflow: hidden;
-      cursor: text;
+      font-weight: 600; font-size: 0.875rem; line-height: 1.3; flex: 1;
+      background: transparent; border: none; outline: none; color: var(--text);
+      padding: 0; font-family: 'Inter',sans-serif; resize: none; overflow: hidden; cursor: text;
     }
-    .card-name:focus {
-      background: rgba(255,255,255,0.7);
-      border-radius: 0.25rem;
-      padding: 0.15rem 0.25rem;
-    }
-
-    .card-delete-btn {
-      background: none;
-      border: none;
-      color: #d1d5db;
-      font-size: 1rem;
-      cursor: pointer;
-      padding: 0;
-      line-height: 1;
-      transition: color 0.15s;
-      flex-shrink: 0;
-    }
+    .card-name:focus { background: rgba(255,255,255,0.8); border-radius: 0.25rem; padding: 0.1rem 0.2rem; }
+    .card-name[readonly] { cursor: default; }
+    .card-delete-btn { background: none; border: none; color: #d1d5db; font-size: 1rem; cursor: pointer; padding: 0; line-height: 1; transition: color 0.15s; flex-shrink: 0; }
     .card-delete-btn:hover { color: var(--coral); }
-
     .card-notes {
-      font-size: 0.76rem;
-      color: var(--muted);
-      background: transparent;
-      border: none;
-      outline: none;
-      width: 100%;
-      font-family: 'Inter', sans-serif;
-      resize: none;
-      line-height: 1.4;
-      cursor: text;
+      font-size: 0.74rem; color: var(--muted); background: transparent; border: none; outline: none;
+      width: 100%; font-family: 'Inter',sans-serif; resize: none; line-height: 1.4; cursor: text;
     }
-    .card-notes:focus {
-      background: rgba(255,255,255,0.7);
-      border-radius: 0.25rem;
-      padding: 0.15rem 0.25rem;
-      color: var(--text);
-    }
+    .card-notes:focus { background: rgba(255,255,255,0.8); border-radius: 0.25rem; padding: 0.1rem 0.2rem; color: var(--text); }
     .card-notes::placeholder { color: #c0c9d0; }
+    .card-notes[readonly] { cursor: default; }
 
-    .card-link-row {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-    .card-link-input {
-      font-size: 0.7rem;
-      color: var(--ocean);
-      background: transparent;
-      border: none;
-      outline: none;
-      flex: 1;
-      font-family: 'Inter', sans-serif;
-      min-width: 0;
-      text-decoration: none;
-      cursor: text;
-    }
+    /* Link row */
+    .card-link-row { display: flex; align-items: center; gap: 0.3rem; }
+    .card-link-input { font-size: 0.68rem; color: var(--ocean); background: transparent; border: none; outline: none; flex: 1; font-family: 'Inter',sans-serif; min-width: 0; }
     .card-link-input::placeholder { color: #c0c9d0; }
-    .card-link-open {
-      font-size: 0.68rem;
-      color: var(--ocean);
-      text-decoration: none;
-      flex-shrink: 0;
-      opacity: 0.7;
-    }
+    .card-link-open { font-size: 0.68rem; color: var(--ocean); text-decoration: none; flex-shrink: 0; opacity: 0.7; }
     .card-link-open:hover { opacity: 1; text-decoration: underline; }
 
-    .card-booking-row {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
+    /* Booking toggle */
+    .card-booking-row { display: flex; align-items: center; gap: 0.4rem; }
     .booking-toggle {
-      appearance: none;
-      width: 14px; height: 14px;
-      border-radius: 3px;
-      border: 1.5px solid #d1d5db;
-      background: white;
-      cursor: pointer;
-      flex-shrink: 0;
-      position: relative;
-      transition: background 0.15s, border-color 0.15s;
+      appearance: none; width: 13px; height: 13px; border-radius: 3px;
+      border: 1.5px solid #d1d5db; background: white; cursor: pointer; flex-shrink: 0;
+      position: relative; transition: background 0.15s, border-color 0.15s;
     }
-    .booking-toggle:checked {
-      background: var(--coral);
-      border-color: var(--coral);
-    }
-    .booking-toggle:checked::after {
-      content: '✓';
-      position: absolute;
-      top: -1px; left: 1px;
-      font-size: 10px;
-      color: white;
-      font-weight: 700;
-    }
-    .booking-label {
-      font-size: 0.7rem;
-      color: var(--muted);
-    }
+    .booking-toggle:checked { background: var(--coral); border-color: var(--coral); }
+    .booking-toggle:checked::after { content:'✓'; position:absolute; top:-1px; left:1px; font-size:9px; color:white; font-weight:700; }
+    .booking-label { font-size: 0.68rem; color: var(--muted); }
     .booking-label.required { color: var(--coral); font-weight: 600; }
 
-    /* Divider between booking toggle and attendees */
-    .card-divider {
-      height: 1px;
-      background: rgba(0,0,0,0.06);
-      margin: 0.1rem 0;
-    }
+    /* Divider */
+    .card-divider { height: 1px; background: rgba(0,0,0,0.06); margin: 0.1rem 0; }
 
     /* Attendee checkboxes */
-    .card-attendees { display: flex; flex-direction: column; gap: 0.3rem; }
-
-    .attendee-row {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
+    .card-attendees { display: flex; flex-direction: column; gap: 0.28rem; }
+    .attendee-row { display: flex; align-items: center; gap: 0.4rem; }
     .attendee-check {
-      appearance: none;
-      width: 14px; height: 14px;
-      border-radius: 3px;
-      border: 1.5px solid #b0c8d4;
-      background: white;
-      cursor: pointer;
-      flex-shrink: 0;
-      position: relative;
-      transition: background 0.15s, border-color 0.15s;
+      appearance: none; width: 13px; height: 13px; border-radius: 3px;
+      border: 1.5px solid #b0c8d4; background: white; cursor: pointer; flex-shrink: 0;
+      position: relative; transition: background 0.15s, border-color 0.15s;
     }
-    .attendee-check:checked {
-      background: var(--palm);
-      border-color: var(--palm);
-    }
-    .attendee-check:checked::after {
-      content: '✓';
-      position: absolute;
-      top: -1px; left: 1px;
-      font-size: 10px;
-      color: white;
-      font-weight: 700;
-    }
-
-    .attendee-name {
-      font-size: 0.72rem;
-      color: var(--text);
-      flex: 1;
-    }
+    .attendee-check:checked { background: var(--palm); border-color: var(--palm); }
+    .attendee-check:checked::after { content:'✓'; position:absolute; top:-1px; left:1px; font-size:9px; color:white; font-weight:700; }
+    .attendee-name { font-size: 0.71rem; color: var(--text); flex: 1; }
     .attendee-name.is-parent { font-weight: 600; }
 
-    /* Group total badge */
-    .card-total-badge {
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: var(--palm);
-      background: #e6f4ec;
-      border-radius: 2rem;
-      padding: 0.15rem 0.5rem;
-      align-self: flex-start;
-      margin-top: 0.1rem;
-    }
+    /* Total badge */
+    .card-total-badge { font-size: 0.66rem; font-weight: 600; color: var(--palm); background: var(--palm-light); border-radius: 2rem; padding: 0.15rem 0.5rem; align-self: flex-start; margin-top: 0.1rem; }
     .card-total-badge.zero { color: #9ca3af; background: #f3f4f6; }
 
-    /* Live sync indicator */
-    .sync-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #4ade80;
-      display: inline-block;
-      margin-right: 0.35rem;
-      animation: pulse-green 2s ease-in-out infinite;
-    }
-    @keyframes pulse-green {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.4; }
-    }
+    /* Boat cap badge */
+    .boat-cap-badge { font-size: 0.66rem; font-weight: 600; border-radius: 2rem; padding: 0.15rem 0.5rem; align-self: flex-start; }
+    .boat-cap-ok   { color: var(--gold);  background: var(--gold-light); }
+    .boat-cap-full { color: var(--coral); background: var(--coral-light); }
+
+    /* Sync dot */
+    .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; display: inline-block; margin-right: 0.35rem; animation: pulse-green 2s ease-in-out infinite; }
+    @keyframes pulse-green { 0%,100%{opacity:1} 50%{opacity:0.4} }
     .sync-dot.offline { background: #f87171; animation: none; }
 
     /* Toast */
-    #toast {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(4rem);
-      background: #1a1a1a;
-      color: white;
-      padding: 0.6rem 1.2rem;
-      border-radius: 2rem;
-      font-size: 0.82rem;
-      font-weight: 500;
-      z-index: 200;
-      transition: transform 0.3s ease;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    #toast.show { transform: translateX(-50%) translateY(0); }
+    #toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(4rem); background:#1a1a1a; color:white; padding:0.6rem 1.2rem; border-radius:2rem; font-size:0.82rem; font-weight:500; z-index:200; transition:transform 0.3s ease; pointer-events:none; white-space:nowrap; }
+    #toast.show { transform:translateX(-50%) translateY(0); }
 
-    /* Loading overlay */
-    #loading-overlay {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(160deg, #0d4f6e 0%, #1a6b8a 40%, #2d7d4f 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      color: white;
-      gap: 1rem;
-      transition: opacity 0.4s ease;
-    }
-    #loading-overlay.fade-out { opacity: 0; pointer-events: none; }
+    /* Loading */
+    #loading-overlay { position:fixed; inset:0; background:linear-gradient(160deg,#0d4f6e 0%,#1a6b8a 40%,#2d7d4f 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:100; color:white; gap:1rem; transition:opacity 0.4s ease; }
+    #loading-overlay.fade-out { opacity:0; pointer-events:none; }
+    .loading-spinner { width:36px; height:36px; border:3px solid rgba(255,255,255,0.2); border-top-color:white; border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
 
-    .loading-spinner {
-      width: 36px; height: 36px;
-      border: 3px solid rgba(255,255,255,0.2);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loading-text {
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-
-    /* Permanent card badge */
-    .permanent-badge {
-      font-size: 0.62rem;
-      background: #c4e8d0;
-      color: var(--palm);
-      border-radius: 2rem;
-      padding: 0.1rem 0.45rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      align-self: flex-start;
-    }
-
-    /* Mobile tweaks */
-    @media (max-width: 480px) {
-      .day-section { margin-left: 0.5rem; margin-right: 0.5rem; }
-      .activity-card { width: 185px; }
+    @media (max-width:480px) {
+      .day-section { margin-left:0.5rem; margin-right:0.5rem; }
+      .activity-card { width:190px; }
     }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════
-     LOADING OVERLAY
-═══════════════════════════════════════════ -->
+<!-- LOADING -->
 <div id="loading-overlay">
   <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;">🌴 Fiji Fabulous 40</div>
   <div class="loading-spinner"></div>
-  <div class="loading-text">Loading planner…</div>
+  <div style="font-size:0.9rem;opacity:0.75;">Loading planner…</div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     WELCOME SCREEN
-═══════════════════════════════════════════ -->
+<!-- WELCOME -->
 <div id="welcome-screen" style="display:none;">
   <div class="welcome-card">
-    <div class="welcome-palm">🌴</div>
+    <div style="font-size:2.4rem;margin-bottom:0.6rem;">🌴</div>
     <div class="welcome-title">Fiji Fabulous 40<br>Planner</div>
     <div class="welcome-subtitle">June 21–27 &nbsp;·&nbsp; Shangri-La Yanuca Island</div>
-
     <label class="welcome-label" for="family-select">Who are you?</label>
     <select class="welcome-select" id="family-select">
       <option value="" disabled selected>Select your family…</option>
-      <option value="dana-simon">Dana &amp; Simon (Heidi, Albert)</option>
+      <option value="dana-simon">Dana &amp; Simon (Heidi, Alfred)</option>
       <option value="carly-tim">Carly &amp; Tim (Addy, Teddy, Elsie)</option>
       <option value="carly-matt">Carly &amp; Matt (Isla, Noah)</option>
       <option value="jenny-lucas">Jenny &amp; Lucas (Neve, Remy, Bede)</option>
       <option value="nat">Nat</option>
       <option value="prue-clint">Prue &amp; Clint (Pip, Annabelle, Henry)</option>
     </select>
-
-    <button class="welcome-btn" id="welcome-btn" onclick="enterApp()">Let's plan! 🎉</button>
+    <button class="welcome-btn" onclick="enterApp()">Let's plan! 🎉</button>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     MAIN APP
-═══════════════════════════════════════════ -->
+<!-- MAIN APP -->
 <div id="app">
   <header class="app-header">
     <div>
@@ -617,7 +284,7 @@
       <div class="app-header-subtitle">June 21–27 · Shangri-La Yanuca Island</div>
     </div>
     <div style="display:flex;align-items:center;gap:0.75rem;">
-      <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">
+      <div style="font-size:0.7rem;color:rgba(255,255,255,0.65);">
         <span class="sync-dot" id="sync-dot"></span><span id="sync-label">Live</span>
       </div>
       <div class="family-badge" id="family-badge" onclick="switchFamily()" title="Switch family">
@@ -626,27 +293,25 @@
     </div>
   </header>
 
+  <!-- Legend -->
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;padding:0.75rem 1.25rem 0;align-items:center;">
+    <span style="font-size:0.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-right:0.25rem;">Key:</span>
+    <span style="font-size:0.68rem;background:var(--sky);border:1.5px solid #b8d8e8;border-radius:0.4rem;padding:0.15rem 0.55rem;color:var(--ocean-dark);font-weight:600;">🏄 Activity</span>
+    <span style="font-size:0.68rem;background:var(--dusk-light);border:1.5px solid #c9b4dc;border-radius:0.4rem;padding:0.15rem 0.55rem;color:var(--dusk);font-weight:600;">🍽 Dinner</span>
+    <span style="font-size:0.68rem;background:var(--gold-light);border:1.5px solid #e0b86a;border-radius:0.4rem;padding:0.15rem 0.55rem;color:var(--gold);font-weight:600;">⛵ Boat Charter</span>
+    <span style="font-size:0.68rem;background:#f8f8f8;border:1.5px solid #e0e0e0;border-radius:0.4rem;padding:0.15rem 0.55rem;color:#555;font-weight:600;">🌊 Free Time</span>
+    <span style="font-size:0.68rem;background:var(--coral-light);border:1.5px solid var(--coral);border-radius:0.4rem;padding:0.15rem 0.55rem;color:var(--coral);font-weight:600;">📋 Needs Booking</span>
+  </div>
+
   <div id="days-container" style="padding-bottom:2rem;"></div>
 </div>
 
-<!-- Toast notification -->
 <div id="toast"></div>
 
-<!-- ═══════════════════════════════════════════
-     FIREBASE SDK
-═══════════════════════════════════════════ -->
 <script type="module">
-// ─────────────────────────────────────────────
-// FIREBASE CONFIGURATION
-// These values identify your Firebase project.
-// The API key is a project identifier, not a
-// secret. Security is enforced via Database Rules
-// (set in the Firebase console) and authorised
-// domains, not by hiding this key.
-// ─────────────────────────────────────────────
-import { initializeApp }          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, update, remove, push, get }
-                                  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { initializeApp }     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, remove }
+                             from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyCq7TFqj_Tdod_JJZrbxYY7cu2gEbpJlcg",
@@ -662,130 +327,168 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db          = getDatabase(firebaseApp);
 
 // ─────────────────────────────────────────────
-// FAMILY DEFINITIONS
-// Each family has parents and kids listed so
-// we can render the right checkboxes per card.
+// FAMILIES
 // ─────────────────────────────────────────────
 const FAMILIES = {
-  "dana-simon":  { label: "Dana & Simon",   parents: ["Dana","Simon"],  kids: ["Heidi","Albert"] },
-  "carly-tim":   { label: "Carly & Tim",    parents: ["Carly","Tim"],   kids: ["Addy","Teddy","Elsie"] },
-  "carly-matt":  { label: "Carly & Matt",   parents: ["Carly","Matt"],  kids: ["Isla","Noah"] },
-  "jenny-lucas": { label: "Jenny & Lucas",  parents: ["Jenny","Lucas"], kids: ["Neve","Remy","Bede"] },
-  "nat":         { label: "Nat",            parents: ["Nat"],           kids: [] },
-  "prue-clint":  { label: "Prue & Clint",   parents: ["Prue","Clint"],  kids: ["Pip","Annabelle","Henry"] },
+  "dana-simon":  { label:"Dana & Simon",  parents:["Dana","Simon"],   kids:["Heidi","Alfred"] },
+  "carly-tim":   { label:"Carly & Tim",   parents:["Carly","Tim"],    kids:["Addy","Teddy","Elsie"] },
+  "carly-matt":  { label:"Carly & Matt",  parents:["Carly","Matt"],   kids:["Isla","Noah"] },
+  "jenny-lucas": { label:"Jenny & Lucas", parents:["Jenny","Lucas"],  kids:["Neve","Remy","Bede"] },
+  "nat":         { label:"Nat",           parents:["Nat"],            kids:[] },
+  "prue-clint":  { label:"Prue & Clint",  parents:["Prue","Clint"],   kids:["Pip","Annabelle","Henry"] },
 };
-
-// All family members across all families, used to calculate total group attendance per card
-const ALL_MEMBERS = Object.values(FAMILIES).flatMap(f => [...f.parents, ...f.kids]);
-// Deduplicate (two Carlys but different families — we key attendance by familyId+name)
-// Attendance keys are stored as "familyId__memberName"
-const ALL_ATTENDANCE_KEYS = Object.entries(FAMILIES).flatMap(([fid, f]) =>
-  [...f.parents, ...f.kids].map(m => `${fid}__${m}`)
-);
 
 // ─────────────────────────────────────────────
 // DAYS & SLOTS
 // ─────────────────────────────────────────────
 const DAYS = [
-  { id: "jun21", label: "Saturday", date: "21 June" },
-  { id: "jun22", label: "Sunday",   date: "22 June" },
-  { id: "jun23", label: "Monday",   date: "23 June" },
-  { id: "jun24", label: "Tuesday",  date: "24 June" },
-  { id: "jun25", label: "Wednesday",date: "25 June" },
-  { id: "jun26", label: "Thursday", date: "26 June" },
-  { id: "jun27", label: "Friday",   date: "27 June" },
+  { id:"jun21", label:"Saturday",  date:"21 June",  dow:"Saturday" },
+  { id:"jun22", label:"Sunday",    date:"22 June",  dow:"Sunday"   },
+  { id:"jun23", label:"Monday",    date:"23 June",  dow:"Monday"   },
+  { id:"jun24", label:"Tuesday",   date:"24 June",  dow:"Tuesday"  },
+  { id:"jun25", label:"Wednesday", date:"25 June",  dow:"Wednesday"},
+  { id:"jun26", label:"Thursday",  date:"26 June",  dow:"Thursday" },
+  { id:"jun27", label:"Friday",    date:"27 June",  dow:"Friday"   },
 ];
 
 const SLOTS = [
-  { id: "morning",   label: "Morning",   emoji: "🌅" },
-  { id: "afternoon", label: "Afternoon", emoji: "☀️" },
-  { id: "evening",   label: "Evening",   emoji: "🌙" },
+  { id:"morning",   label:"Morning",   emoji:"🌅" },
+  { id:"afternoon", label:"Afternoon", emoji:"☀️" },
+  { id:"evening",   label:"Evening",   emoji:"🌙" },
 ];
 
-// Permanent cards shown in every slot (non-deletable)
-const PERMANENT_CARDS = [
-  { id: "own-thing", name: "Own Thing / Free Time", notes: "Do your own thing 🏖️", isPermanent: true },
-  { id: "kids-club", name: "Kids Club",              notes: "Shangri-La supervised kids activities", isPermanent: true },
-];
+// Slot hint text shown in the header
+const SLOT_HINTS = {
+  morning:   "activities & plans",
+  afternoon: "activities & plans",
+  evening:   "dinner & evening plans",
+};
+
+// Card types
+const TYPE = { ACTIVITY:"activity", DINNER:"dinner", BOAT:"boat", FREE:"free" };
+
+// Permanent cards per slot (never deletable, always shown)
+// "own-thing" shown in all slots; "kids-club" added dynamically per slot
+const PERM_OWN_THING = {
+  id:"own-thing", name:"Own Thing / Free Time",
+  notes:"Doing your own thing — add a note to propose something 🏖️",
+  isPermanent:true, type:TYPE.FREE,
+};
+const PERM_KIDS_CLUB = {
+  id:"kids-club", name:"Kids Club — Little Chiefs",
+  notes:"Resort-supervised kids activities all day",
+  isPermanent:true, type:TYPE.ACTIVITY,
+};
 
 // ─────────────────────────────────────────────
 // SEED DATA
-// Pre-populated activities for each day/slot.
-// These are written to Firebase only once on
-// first load — after that, Firebase is the
-// source of truth and users can edit freely.
+// Full 7-day itinerary — written to Firebase once on first load.
+// Types: activity | dinner | boat | free
+// needsBooking: true = Simon needs to book, others need to RSVP
+// boatCap: integer = max RSVP count for boat charters
 // ─────────────────────────────────────────────
-const SEED_ACTIVITIES = {
+const SEED = {
   jun21: {
-    morning:   [ { name: "Arrivals & Check-in",     notes: "Settle in, explore the resort 🏝️",         needsBooking: false } ],
-    afternoon: [ { name: "Aqua Park",                notes: "Inflatable water park in the lagoon 🤿",    needsBooking: false },
-                 { name: "Beach Volleyball",         notes: "Resort beach court",                         needsBooking: false } ],
-    evening:   [ { name: "Welcome Dinner",           notes: "Group dinner — toast to the Fab 40s! 🥂",   needsBooking: true  },
-                 { name: "Sunset Cocktails",         notes: "Bar by the beach",                           needsBooking: false } ],
+    morning: [
+      { type:TYPE.ACTIVITY, name:"Arrivals & Check-in", notes:"Settle in, explore the resort 🏝️", needsBooking:false },
+    ],
+    afternoon: [
+      { type:TYPE.ACTIVITY, name:"Aqua Park — Inflatable Water Park", notes:"In the lagoon — rodeo slide, monkey bars, action tower. Biggest in Fiji 🤿", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Beach Volleyball", notes:"Lagoon Beach, 4pm daily", needsBooking:false },
+    ],
+    evening: [
+      { type:TYPE.DINNER, name:"Welcome Drinks — Bilo Bar", notes:"Kick off the trip together on the beach 🥂 Casual, no booking needed. Happy hour starts 4pm.", needsBooking:false },
+    ],
   },
   jun22: {
-    morning:   [ { name: "Snorkelling",              notes: "Coral reef off the beach 🐠",                needsBooking: false },
-                 { name: "Kayaking",                 notes: "Double and single kayaks available",          needsBooking: false } ],
-    afternoon: [ { name: "Jet Skis",                 notes: "Book through resort watersports desk 🚤",    needsBooking: true  },
-                 { name: "Swim & Relax",             notes: "Main pool or beach",                         needsBooking: false } ],
-    evening:   [ { name: "Backyard Grill Night",     notes: "BBQ on the beach — BYO drinks 🍺",           needsBooking: false },
-                 { name: "Kids Movie Night",         notes: "Resort kids lounge",                         needsBooking: false } ],
+    morning: [
+      { type:TYPE.ACTIVITY, name:"Snorkelling off the Beach", notes:"Coral reef directly off the lagoon beach 🐠 Free, gear from the Sea Sports Centre", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Horse Riding", notes:"9am–5pm across Yanuca Island oceanfront trails. All ages & skill levels welcome 🐴\nAdults: ~A$23 | Kids: ~A$12\nBook at Sea Sports Centre", needsBooking:true },
+    ],
+    afternoon: [
+      { type:TYPE.ACTIVITY, name:"Aqua Park", notes:"Second session in the lagoon inflatable park 🌊", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Pool Basketball & Lagoon Swim", notes:"Lagoon Pool — 12pm daily", needsBooking:false },
+    ],
+    evening: [
+      { type:TYPE.DINNER, name:"Lagoon Terrace Dinner Buffet", notes:"Main resort restaurant. Nightly buffet with live cooking stations, great kids area & menu.\n💰 ~A$65 (~FJD 95) adults | ~A$33 (~FJD 48) kids\nReservation recommended — contact concierge.", needsBooking:true, link:"" },
+    ],
   },
   jun23: {
-    morning:   [ { name: "Sigatoka River Safari",   notes: "Half-day tour — book through concierge 🛶",  needsBooking: true  },
-                 { name: "Tennis",                   notes: "Resort courts (racquets available)",         needsBooking: false } ],
-    afternoon: [ { name: "Mini Golf",                notes: "18-hole course on resort grounds ⛳",        needsBooking: false },
-                 { name: "Pool Floats & Chill",      notes: "Grab a float and relax ☀️",                 needsBooking: false } ],
-    evening:   [ { name: "Cultural Dinner",          notes: "Fijian lovo feast & meke performance 🎶",   needsBooking: true  } ],
+    morning: [
+      { type:TYPE.ACTIVITY, name:"Sigatoka River Safari", notes:"Jet boat up the Sigatoka River to an authentic Fijian village. Kava ceremony, village tour, traditional lunch, 360° spins 🛶\n💰 ~A$170 (~FJD 249) adults | ~A$86 (~FJD 125) kids 4–15 | Under 3 free\n⚠️ 20 person max per boat — we need 2 bookings.\nMorning departs ~8:45am. Book ASAP.", needsBooking:true, link:"https://sigatokariver.com/#book-now" },
+    ],
+    afternoon: [
+      { type:TYPE.ACTIVITY, name:"Sigatoka River Safari (Afternoon Group)", notes:"Afternoon departs ~1:00pm. Second group if we split morning/arvo.\n💰 ~A$170 (~FJD 249) adults | ~A$86 (~FJD 125) kids 4–15\nBook at sigatokariver.com", needsBooking:true, link:"https://sigatokariver.com/#book-now" },
+      { type:TYPE.ACTIVITY, name:"Mini Golf (Putt-Putt)", notes:"18-hole resort course — all ages ⛳ Free or minimal cost. Near the Pro Shop.", needsBooking:false },
+    ],
+    evening: [
+      { type:TYPE.DINNER, name:"Takali Asian Kitchen", notes:"Asian à la carte sharing plates on the reef-view terrace. Dumplings, seafood curries, gin bar 🍜\n💰 ~A$17–27 (FJD 25–40) per person\nReservation recommended.", needsBooking:true },
+    ],
   },
   jun24: {
-    morning:   [ { name: "Guided Hike",              notes: "Resort trails through tropical gardens 🌿",  needsBooking: false },
-                 { name: "Beach Cricket",            notes: "Bat and ball on the beach 🏏",               needsBooking: false } ],
-    afternoon: [ { name: "Aqua Park",                notes: "Second go at the inflatable lagoon park",    needsBooking: false },
-                 { name: "Stand-Up Paddleboarding",  notes: "Book through watersports desk 🏄",           needsBooking: true  } ],
-    evening:   [ { name: "Group Dinner (Restaurant)",notes: "Main resort restaurant — reservation needed",needsBooking: true  },
-                 { name: "Card Night",               notes: "Bring your deck 🃏",                         needsBooking: false } ],
+    morning: [
+      { type:TYPE.ACTIVITY, name:"Jet Ski Hire — Hydro Sports Fiji", notes:"Hire direct from the lagoon watersports desk. Adults only for driving (16+ tandem, 18+ solo).\n💰 15 min solo A$107 | Tandem A$120\n30 min solo A$145 | Tandem A$170\nCall: +679 777 4081", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/jet-ski-hire-shangri-la/" },
+      { type:TYPE.ACTIVITY, name:"Kayak Mangrove Tour", notes:"Meet at Sea Sports Centre, 10am Tuesday schedule 🛶 Free resort activity.", needsBooking:false },
+    ],
+    afternoon: [
+      { type:TYPE.ACTIVITY, name:"Flyboarding — Hydro Sports Fiji", notes:"Hover above the water! Kids 8+ welcome 🚀\n💰 15 min: A$130 (~FJD 190) | 30 min: A$198 (~FJD 290)\nBook at watersports desk.", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/" },
+      { type:TYPE.ACTIVITY, name:"Tennis", notes:"Resort courts — 2 courts, racquets available. Free. Great for doubles 🎾", needsBooking:false },
+    ],
+    evening: [
+      { type:TYPE.DINNER, name:"Backyard Grill — Beach Bar & Grill", notes:"Every Tuesday 6–8pm on the beachfront BBQ. Freshly grilled meats, curated wine pairings, live duo entertainment 🎸\n1 glass house wine/soft drink/juice included.\n💰 ~A$17–27 (FJD 25–40) per person. Kids under 5 dine free.\nRSVP: information.center@shangri-la.com or dial operator.", needsBooking:true },
+    ],
   },
   jun25: {
-    morning:   [ { name: "Spa Morning",              notes: "Treatments for the adults 💆 — book ahead",  needsBooking: true  },
-                 { name: "Cooking Class",            notes: "Learn a Fijian dish with the resort chef",   needsBooking: true  } ],
-    afternoon: [ { name: "Village Visit",            notes: "Local Fijian village tour — concierge",      needsBooking: true  },
-                 { name: "Lazy Beach Day",           notes: "Cold drinks, sun loungers, do nothing 🍹",   needsBooking: false } ],
-    evening:   [ { name: "Backyard Grill Night 2",   notes: "Round two of the beach BBQ 🔥",              needsBooking: false } ],
+    morning: [
+      { type:TYPE.ACTIVITY, name:"Chi, The Spa — Adults Morning", notes:"Resort spa in secluded bures with ocean views 💆\nTraditional Fijian Bobo Massage (60 min): ~A$116\nJourney to Fiji (2hr massage + scrub): A$197 (~FJD 288)\nDusk Til Dawn overnight bure experience also available.\nBook: chiservice@yanucaisland.shangri-la.com", needsBooking:true, link:"https://www.shangri-la.com/yanucaisland/fijianresort/chi-the-spa/" },
+      { type:TYPE.ACTIVITY, name:"Helen's Spa", notes:"Walking distance from the resort. Local alternative to Chi — likely more affordable 💅\nConfirm with concierge on arrival.", needsBooking:false },
+    ],
+    afternoon: [
+      { type:TYPE.BOAT, name:"Private Boat Charter — Coral Coast", notes:"4-hour catamaran charter direct from the resort lagoon. Snorkelling gear + fishing equipment included. Explore reefs, sandbars, Coral Coast 🌊\n💰 A$1,540 (~FJD 2,250) for the whole boat\n⚠️ Max 16 people. RSVP below — first 16 secure a spot.\nBook: +679 777 4081 or bookings@hydrosportsfiji.com\nBYO food & drinks (no glass).", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/boat-tour/", boatCap:16 },
+      { type:TYPE.ACTIVITY, name:"Golf — 9-Hole Executive Course", notes:"Peter Thompson designed course on the island. Clubs for hire at the Pro Shop ⛳\nDress code: collared shirts, tailored shorts.\nBook: golf@yanucaisland.shangri-la.com", needsBooking:true },
+    ],
+    evening: [
+      { type:TYPE.DINNER, name:"Golden Cowrie Coastal Italian — Adults Only", notes:"Premium Italian dining with hand-made pasta, wood-fired pizza, fresh local seafood 🍝\nAdults only evening — kids to Little Chiefs Club with resort nannies.\nReservation required — contact concierge.", needsBooking:true },
+    ],
   },
   jun26: {
-    morning:   [ { name: "Snorkelling Trip",         notes: "Boat trip to the outer reef — book concierge",needsBooking: true  },
-                 { name: "Tennis Round Robin",       notes: "Group doubles tournament 🎾",                needsBooking: false } ],
-    afternoon: [ { name: "Jet Skis (Round 2)",       notes: "Watersports desk 🚤",                        needsBooking: true  },
-                 { name: "Pool Games",               notes: "Diving contests, water polo",                needsBooking: false } ],
-    evening:   [ { name: "Farewell Dinner",          notes: "Special send-off dinner — book ahead 🥂",    needsBooking: true  },
-                 { name: "Bonfire & Drinks",         notes: "Beach bonfire to close out the trip 🔥",     needsBooking: false } ],
+    morning: [
+      { type:TYPE.ACTIVITY, name:"Parasailing — Hydro Sports Fiji", notes:"Soar above the Coral Coast 🪂 15-min flights, max 200kg per flight.\nPricing via booking request — contact watersports desk.", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/parasailing-shangri-la/" },
+      { type:TYPE.ACTIVITY, name:"Scuba Diving — Hydro Sports Fiji", notes:"Reef wall and shark observation dives 🦈 Ages 10+\n💰 From ~A$165 per person\nBook: hydrosportsfiji.com or FareHarbor link", needsBooking:true, link:"https://www.hydrosportsfiji.com/scuba-diving/" },
+    ],
+    afternoon: [
+      { type:TYPE.ACTIVITY, name:"Jet Ski Safari Tour — 2.5hrs", notes:"Full safari out to the reef with snorkelling included 🚤 Drivers 16+ (tandem) or 18+ (solo).\nContact watersports desk for pricing.\nCall: +679 777 4081", needsBooking:true, link:"https://www.hydrosportsfiji.com/shangri-la/jet-ski-safari-tours/" },
+      { type:TYPE.ACTIVITY, name:"Touch Rugby & Beach Volleyball", notes:"Lagoon Lawn 3pm then Lagoon Beach 4pm — resort daily schedule 🏉🏐", needsBooking:false },
+    ],
+    evening: [
+      { type:TYPE.DINNER, name:"Backyard Grill — Beach Bar & Grill", notes:"Every Thursday 6–8pm on the beachfront BBQ. Freshly grilled meats, wine, live duo 🎸\n1 glass house wine/soft drink included. Kids under 5 dine free.\n💰 ~A$17–27 (FJD 25–40)\nRSVP: information.center@shangri-la.com", needsBooking:true },
+    ],
   },
   jun27: {
-    morning:   [ { name: "Final Swim",               notes: "Last splash before check-out 🌊",            needsBooking: false },
-                 { name: "Breakfast Together",       notes: "Group brekkie before the goodbyes",          needsBooking: false } ],
-    afternoon: [ { name: "Check-out & Transfers",   notes: "Safe travels everyone! ✈️",                  needsBooking: false } ],
-    evening:   [ { name: "Travel Day",               notes: "Heading home",                               needsBooking: false } ],
+    morning: [
+      { type:TYPE.ACTIVITY, name:"Final Swim & Aqua Park", notes:"Last splash before checkout 🌊 Make it count!", needsBooking:false },
+      { type:TYPE.ACTIVITY, name:"Hair Braiding", notes:"On-resort beach vendors — pay direct on the day 🪢\nConfirm with concierge on arrival for vendor schedule.", needsBooking:false },
+    ],
+    afternoon: [
+      { type:TYPE.ACTIVITY, name:"Check-out & Transfers", notes:"Safe travels everyone ✈️", needsBooking:false },
+    ],
+    evening: [
+      { type:TYPE.DINNER, name:"Marau Village — Sacred Flame Show & Lovo Dinner", notes:"On-site at the resort. Fire walking, meke dancing, traditional lovo feast 🔥\nRuns Monday & Friday evenings — the perfect farewell night!\n💰 A$99 (~FJD 145) adults | A$50 (~FJD 73) kids under 16\nBook through resort concierge — numbers needed in advance.", needsBooking:true },
+    ],
   },
 };
+
+// Wednesday evening also needs a pre-filled kids club card (added in render logic)
 
 // ─────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────
-let currentFamily   = null;   // e.g. "dana-simon"
-let plannerData     = {};     // local mirror of Firebase /fijiPlanner
-let dbListener      = null;   // Firebase unsubscribe handle
+let currentFamily = null;
+let plannerData   = {};
+let dbListener    = null;
 
-// ─────────────────────────────────────────────
-// UTILITY: generate a short random ID
-// ─────────────────────────────────────────────
-function uid() {
-  return Math.random().toString(36).slice(2, 9);
-}
+function uid() { return Math.random().toString(36).slice(2,9); }
 
-// ─────────────────────────────────────────────
-// UTILITY: show a brief toast message
-// ─────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -794,9 +497,9 @@ function showToast(msg) {
 }
 
 // ─────────────────────────────────────────────
-// WELCOME SCREEN LOGIC
+// WELCOME / FAMILY SELECTION
 // ─────────────────────────────────────────────
-window.enterApp = function () {
+window.enterApp = function() {
   const sel = document.getElementById('family-select').value;
   if (!sel) { showToast('Please select your family first.'); return; }
   currentFamily = sel;
@@ -804,7 +507,7 @@ window.enterApp = function () {
   showApp();
 };
 
-window.switchFamily = function () {
+window.switchFamily = function() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('welcome-screen').style.display = 'flex';
   document.getElementById('family-select').value = currentFamily || '';
@@ -813,72 +516,49 @@ window.switchFamily = function () {
 function showApp() {
   document.getElementById('welcome-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  const fam = FAMILIES[currentFamily];
-  document.getElementById('family-name-header').textContent = fam.label;
+  document.getElementById('family-name-header').textContent = FAMILIES[currentFamily].label;
   attachFirebaseListener();
 }
 
 // ─────────────────────────────────────────────
-// FIREBASE: attach a realtime listener on
-// /fijiPlanner — whenever data changes anywhere,
-// we get the full snapshot and re-render.
+// FIREBASE
 // ─────────────────────────────────────────────
 function attachFirebaseListener() {
   const plannerRef = ref(db, 'fijiPlanner');
-
-  if (dbListener) dbListener();   // detach old listener if switching families
-
+  if (dbListener) dbListener();
   dbListener = onValue(plannerRef, (snapshot) => {
     setSyncStatus(true);
     const data = snapshot.val();
-
     if (!data || Object.keys(data).length === 0) {
-      // First load — seed the database with our initial activities
-      seedDatabase().then(() => {});
+      seedDatabase();
     } else {
       plannerData = data;
       renderPlanner();
     }
-  }, (error) => {
-    console.error('Firebase error:', error);
-    setSyncStatus(false);
-  });
+  }, () => setSyncStatus(false));
 }
 
 function setSyncStatus(online) {
-  const dot   = document.getElementById('sync-dot');
-  const label = document.getElementById('sync-label');
-  if (online) {
-    dot.classList.remove('offline');
-    label.textContent = 'Live';
-  } else {
-    dot.classList.add('offline');
-    label.textContent = 'Offline';
-  }
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  dot.classList.toggle('offline', !online);
+  lbl.textContent = online ? 'Live' : 'Offline';
 }
 
-// ─────────────────────────────────────────────
-// SEED: write initial activities to Firebase
-// This only runs when the database is empty.
-// Each activity gets a Firebase push ID as key.
-// ─────────────────────────────────────────────
 async function seedDatabase() {
   const writes = {};
   for (const day of DAYS) {
     writes[day.id] = {};
     for (const slot of SLOTS) {
       writes[day.id][slot.id] = { activities: {} };
-      const seeded = SEED_ACTIVITIES[day.id]?.[slot.id] || [];
-      for (const act of seeded) {
+      const seeds = SEED[day.id]?.[slot.id] || [];
+      for (const s of seeds) {
         const id = uid();
         writes[day.id][slot.id].activities[id] = {
-          id,
-          name:         act.name,
-          notes:        act.notes || '',
-          link:         '',
-          needsBooking: act.needsBooking || false,
-          attendance:   {},
-          isPermanent:  false,
+          id, name:s.name, notes:s.notes||'', link:s.link||'',
+          needsBooking:s.needsBooking||false, type:s.type||TYPE.ACTIVITY,
+          attendance:{}, isPermanent:false,
+          ...(s.boatCap ? { boatCap:s.boatCap } : {}),
         };
       }
     }
@@ -887,66 +567,64 @@ async function seedDatabase() {
 }
 
 // ─────────────────────────────────────────────
-// RENDER: build the full planner UI from
-// plannerData. Called every time Firebase
-// sends an update.
+// RENDER
 // ─────────────────────────────────────────────
 function renderPlanner() {
   const container = document.getElementById('days-container');
-
-  // We preserve scroll position so the page doesn't jump on live updates
-  const scrollY = window.scrollY;
-
+  const scrollY   = window.scrollY;
   container.innerHTML = '';
 
   for (const day of DAYS) {
     const dayEl = document.createElement('div');
     dayEl.className = 'day-section';
-
-    dayEl.innerHTML = `
-      <div class="day-header">
-        <span class="day-name">${day.label}</span>
-        <span class="day-date">${day.date}</span>
-      </div>
-    `;
+    dayEl.innerHTML = `<div class="day-header"><span class="day-name">${day.label}</span><span class="day-date">${day.date}</span></div>`;
 
     for (const slot of SLOTS) {
-      const slotEl = document.createElement('div');
+      const slotEl  = document.createElement('div');
       slotEl.className = 'slot-section';
 
-      slotEl.innerHTML = `
-        <div class="slot-header">
+      // Slot header with add button
+      const hdr = document.createElement('div');
+      hdr.className = 'slot-header';
+      hdr.innerHTML = `
+        <div class="slot-header-left">
           <span class="slot-emoji">${slot.emoji}</span>
           <span>${slot.label}</span>
+          <span style="font-weight:400;opacity:0.7;">— ${SLOT_HINTS[slot.id]}</span>
         </div>
-      `;
+        <div style="display:flex;gap:0.4rem;">
+          ${slot.id !== 'evening' ? `<button class="add-card-btn-inline" onclick="addCard('${day.id}','${slot.id}','${TYPE.ACTIVITY}')">＋ Activity</button>` : ''}
+          ${slot.id === 'evening' ? `<button class="add-card-btn-inline" onclick="addCard('${day.id}','${slot.id}','${TYPE.DINNER}')">＋ Dinner</button>` : ''}
+        </div>`;
+      slotEl.appendChild(hdr);
 
-      const rowEl = document.createElement('div');
-      rowEl.className = 'slot-cards-row';
+      const row = document.createElement('div');
+      row.className = 'slot-cards-row';
 
       // Regular activities from Firebase
-      const activities = plannerData[day.id]?.[slot.id]?.activities || {};
-      for (const [actId, act] of Object.entries(activities)) {
-        rowEl.appendChild(buildCard(day.id, slot.id, actId, act, false));
+      const acts = plannerData[day.id]?.[slot.id]?.activities || {};
+      for (const [actId, act] of Object.entries(acts)) {
+        row.appendChild(buildCard(day.id, slot.id, actId, act, false));
       }
 
-      // Permanent cards (Own Thing / Kids Club) — always shown, not from Firebase
-      for (const perm of PERMANENT_CARDS) {
-        rowEl.appendChild(buildCard(day.id, slot.id, perm.id, {
-          ...perm,
-          attendance:   plannerData[day.id]?.[slot.id]?.permanent?.[perm.id]?.attendance || {},
-          needsBooking: false,
+      // Permanent cards
+      // Own Thing in all slots
+      row.appendChild(buildCard(day.id, slot.id, PERM_OWN_THING.id, {
+        ...PERM_OWN_THING,
+        attendance: plannerData[day.id]?.[slot.id]?.permanent?.[PERM_OWN_THING.id]?.attendance || {},
+        notes: plannerData[day.id]?.[slot.id]?.permanent?.[PERM_OWN_THING.id]?.notes || PERM_OWN_THING.notes,
+      }, true));
+
+      // Kids Club: always in evening; also pre-filled on Wednesday evening
+      const isWedEvening = (day.id === 'jun25' && slot.id === 'evening');
+      if (slot.id === 'evening' || isWedEvening) {
+        row.appendChild(buildCard(day.id, slot.id, PERM_KIDS_CLUB.id, {
+          ...PERM_KIDS_CLUB,
+          attendance: plannerData[day.id]?.[slot.id]?.permanent?.[PERM_KIDS_CLUB.id]?.attendance || {},
         }, true));
       }
 
-      // Add card button
-      const addBtn = document.createElement('button');
-      addBtn.className = 'add-card-btn';
-      addBtn.innerHTML = `<span class="add-card-btn-icon">＋</span><span>Add activity</span>`;
-      addBtn.onclick = () => addCard(day.id, slot.id);
-      rowEl.appendChild(addBtn);
-
-      slotEl.appendChild(rowEl);
+      slotEl.appendChild(row);
       dayEl.appendChild(slotEl);
     }
 
@@ -957,123 +635,123 @@ function renderPlanner() {
 }
 
 // ─────────────────────────────────────────────
-// BUILD CARD: creates a single activity card
-// element. isPermanent = true for Own Thing /
-// Kids Club cards.
+// BUILD CARD
 // ─────────────────────────────────────────────
 function buildCard(dayId, slotId, actId, act, isPermanent) {
   const fam     = FAMILIES[currentFamily];
-  const members = [...fam.parents, ...fam.kids];
+  const cardType = act.type || TYPE.ACTIVITY;
 
   const card = document.createElement('div');
-  card.className = `activity-card${act.needsBooking ? ' needs-booking' : ''}${isPermanent ? ' is-permanent' : ''}`;
-  card.dataset.actId = actId;
+  card.className = `activity-card card-type-${isPermanent ? (cardType === TYPE.FREE ? 'free' : cardType === TYPE.DINNER ? 'dinner' : 'activity') : cardType}`;
+  if (act.needsBooking) card.classList.add('needs-booking');
 
-  // ── Card top row: name + delete button ──
+  // ── Type pill ──
+  const pill = document.createElement('span');
+  pill.className = 'card-type-pill';
+  if (isPermanent) {
+    pill.className += ' pill-permanent';
+    pill.textContent = cardType === TYPE.FREE ? '🌊 Free Time' : '👶 Always On';
+  } else {
+    const pillMap = {
+      [TYPE.ACTIVITY]: { cls:'pill-activity', label:'🏄 Activity' },
+      [TYPE.DINNER]:   { cls:'pill-dinner',   label:'🍽 Dinner'   },
+      [TYPE.BOAT]:     { cls:'pill-boat',      label:'⛵ Boat Charter' },
+      [TYPE.FREE]:     { cls:'pill-free',      label:'🌊 Free Time' },
+    };
+    const p = pillMap[cardType] || pillMap[TYPE.ACTIVITY];
+    pill.className += ` ${p.cls}`;
+    pill.textContent = p.label;
+  }
+  card.appendChild(pill);
+
+  // ── Name + delete ──
   const topRow = document.createElement('div');
   topRow.className = 'card-top-row';
 
   const nameEl = document.createElement('textarea');
   nameEl.className = 'card-name';
   nameEl.value = act.name;
-  nameEl.rows = 1;
+  nameEl.rows  = 1;
   nameEl.placeholder = 'Activity name';
-  autoResizeTextarea(nameEl);
-  if (!isPermanent) {
-    nameEl.addEventListener('change', () => {
-      updateField(dayId, slotId, actId, 'name', nameEl.value);
-    });
-    nameEl.addEventListener('input', () => autoResizeTextarea(nameEl));
-  } else {
+  autoResize(nameEl);
+  if (isPermanent) {
     nameEl.readOnly = true;
+  } else {
+    nameEl.addEventListener('change', () => updateField(dayId, slotId, actId, 'name', nameEl.value));
+    nameEl.addEventListener('input',  () => autoResize(nameEl));
   }
-
   topRow.appendChild(nameEl);
 
   if (!isPermanent) {
-    const delBtn = document.createElement('button');
-    delBtn.className = 'card-delete-btn';
-    delBtn.title = 'Delete activity';
-    delBtn.innerHTML = '✕';
-    delBtn.onclick = () => deleteCard(dayId, slotId, actId, act.name);
-    topRow.appendChild(delBtn);
-  } else {
-    const badge = document.createElement('span');
-    badge.className = 'permanent-badge';
-    badge.textContent = 'Always';
-    topRow.appendChild(badge);
+    const del = document.createElement('button');
+    del.className = 'card-delete-btn';
+    del.innerHTML = '✕';
+    del.title     = 'Delete';
+    del.onclick   = () => deleteCard(dayId, slotId, actId, act.name);
+    topRow.appendChild(del);
   }
-
   card.appendChild(topRow);
 
   // ── Notes ──
   const notesEl = document.createElement('textarea');
-  notesEl.className = 'card-notes';
-  notesEl.value = act.notes || '';
-  notesEl.rows = 2;
-  notesEl.placeholder = 'Add notes…';
-  autoResizeTextarea(notesEl);
-  if (!isPermanent) {
+  notesEl.className   = 'card-notes';
+  notesEl.value       = act.notes || '';
+  notesEl.rows        = 3;
+  notesEl.placeholder = isPermanent ? 'Add a note or propose something…' : 'Notes, details, pricing…';
+  autoResize(notesEl);
+
+  // Own Thing permanent card — notes are editable (people write their own plans)
+  if (isPermanent && actId === PERM_OWN_THING.id) {
+    notesEl.readOnly = false;
     notesEl.addEventListener('change', () => {
-      updateField(dayId, slotId, actId, 'notes', notesEl.value);
+      set(ref(db, `fijiPlanner/${dayId}/${slotId}/permanent/${actId}/notes`), notesEl.value);
     });
-    notesEl.addEventListener('input', () => autoResizeTextarea(notesEl));
-  } else {
+    notesEl.addEventListener('input', () => autoResize(notesEl));
+  } else if (isPermanent) {
     notesEl.readOnly = true;
+  } else {
+    notesEl.addEventListener('change', () => updateField(dayId, slotId, actId, 'notes', notesEl.value));
+    notesEl.addEventListener('input',  () => autoResize(notesEl));
   }
   card.appendChild(notesEl);
 
-  // ── Link ──
+  // ── Link (non-permanent only) ──
   if (!isPermanent) {
     const linkRow = document.createElement('div');
     linkRow.className = 'card-link-row';
-
-    const linkInput = document.createElement('input');
-    linkInput.className = 'card-link-input';
-    linkInput.type = 'url';
-    linkInput.placeholder = 'Add link…';
-    linkInput.value = act.link || '';
-    linkInput.addEventListener('change', () => {
-      updateField(dayId, slotId, actId, 'link', linkInput.value);
-    });
-
-    linkRow.appendChild(linkInput);
-
+    const linkIn = document.createElement('input');
+    linkIn.className   = 'card-link-input';
+    linkIn.type        = 'url';
+    linkIn.placeholder = 'Add link…';
+    linkIn.value       = act.link || '';
+    linkIn.addEventListener('change', () => updateField(dayId, slotId, actId, 'link', linkIn.value));
+    linkRow.appendChild(linkIn);
     if (act.link) {
-      const openLink = document.createElement('a');
-      openLink.className = 'card-link-open';
-      openLink.href = act.link;
-      openLink.target = '_blank';
-      openLink.rel = 'noopener noreferrer';
-      openLink.textContent = '↗';
-      linkRow.appendChild(openLink);
+      const a = document.createElement('a');
+      a.className = 'card-link-open';
+      a.href = act.link; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = '↗';
+      linkRow.appendChild(a);
     }
     card.appendChild(linkRow);
   }
 
-  // ── Needs Booking toggle ──
+  // ── Booking toggle (non-permanent only) ──
   if (!isPermanent) {
-    const bookRow = document.createElement('div');
-    bookRow.className = 'card-booking-row';
-
-    const bookCheck = document.createElement('input');
-    bookCheck.type = 'checkbox';
-    bookCheck.className = 'booking-toggle';
-    bookCheck.checked = !!act.needsBooking;
-    bookCheck.addEventListener('change', () => {
-      updateField(dayId, slotId, actId, 'needsBooking', bookCheck.checked);
-      card.classList.toggle('needs-booking', bookCheck.checked);
-      bookLabel.className = `booking-label${bookCheck.checked ? ' required' : ''}`;
-      bookLabel.textContent = bookCheck.checked ? 'Needs booking!' : 'Needs booking?';
+    const bRow = document.createElement('div');
+    bRow.className = 'card-booking-row';
+    const bChk = document.createElement('input');
+    bChk.type = 'checkbox'; bChk.className = 'booking-toggle'; bChk.checked = !!act.needsBooking;
+    const bLbl = document.createElement('label');
+    bLbl.className = `booking-label${act.needsBooking ? ' required' : ''}`;
+    bLbl.textContent = act.needsBooking ? '📋 Simon is booking — RSVP below' : 'Needs booking?';
+    bChk.addEventListener('change', () => {
+      updateField(dayId, slotId, actId, 'needsBooking', bChk.checked);
+      card.classList.toggle('needs-booking', bChk.checked);
+      bLbl.className = `booking-label${bChk.checked ? ' required' : ''}`;
+      bLbl.textContent = bChk.checked ? '📋 Simon is booking — RSVP below' : 'Needs booking?';
     });
-
-    const bookLabel = document.createElement('label');
-    bookLabel.className = `booking-label${act.needsBooking ? ' required' : ''}`;
-    bookLabel.textContent = act.needsBooking ? 'Needs booking!' : 'Needs booking?';
-
-    bookRow.appendChild(bookCheck);
-    bookRow.appendChild(bookLabel);
-    card.appendChild(bookRow);
+    bRow.appendChild(bChk); bRow.appendChild(bLbl);
+    card.appendChild(bRow);
   }
 
   // ── Divider ──
@@ -1081,62 +759,77 @@ function buildCard(dayId, slotId, actId, act, isPermanent) {
   div.className = 'card-divider';
   card.appendChild(div);
 
-  // ── Attendee checkboxes (current family members only) ──
+  // ── Attendee checkboxes ──
   const attendeesEl = document.createElement('div');
   attendeesEl.className = 'card-attendees';
 
-  // Group total across ALL families
-  const totalAttending = countTotalAttendance(act.attendance);
-  const totalBadge = document.createElement('div');
-  totalBadge.className = `card-total-badge${totalAttending === 0 ? ' zero' : ''}`;
-  totalBadge.textContent = totalAttending === 0 ? 'No one yet' : `${totalAttending} attending`;
+  const members  = [...fam.parents, ...fam.kids];
+  const isBoat   = cardType === TYPE.BOAT && !isPermanent;
+  const boatCap  = act.boatCap || 16;
 
-  // Parents first, then kids
-  const allMembers = [...fam.parents, ...fam.kids];
-  for (const member of allMembers) {
-    const attendKey = `${currentFamily}__${member}`;
-    const isChecked = !!(act.attendance && act.attendance[attendKey]);
+  // Count total current attendance across all families
+  const totalCount = countAttendance(act.attendance);
+
+  for (const member of members) {
+    const key       = `${currentFamily}__${member}`;
+    const isChecked = !!(act.attendance && act.attendance[key]);
     const isParent  = fam.parents.includes(member);
 
-    const row = document.createElement('div');
+    // For boat: if cap reached and this person isn't already checked, disable
+    const atCap     = isBoat && totalCount >= boatCap && !isChecked;
+
+    const row  = document.createElement('div');
     row.className = 'attendee-row';
 
-    const chk = document.createElement('input');
-    chk.type = 'checkbox';
+    const chk  = document.createElement('input');
+    chk.type   = 'checkbox';
     chk.className = 'attendee-check';
-    chk.checked = isChecked;
-    chk.dataset.key = attendKey;
+    chk.checked   = isChecked;
+    chk.disabled  = atCap;
+    if (atCap) chk.title = 'Boat is full (16 people)';
+
+    const path = isPermanent
+      ? `fijiPlanner/${dayId}/${slotId}/permanent/${actId}/attendance/${key}`
+      : `fijiPlanner/${dayId}/${slotId}/activities/${actId}/attendance/${key}`;
 
     chk.addEventListener('change', () => {
-      const path = isPermanent
-        ? `fijiPlanner/${dayId}/${slotId}/permanent/${actId}/attendance/${attendKey}`
-        : `fijiPlanner/${dayId}/${slotId}/activities/${actId}/attendance/${attendKey}`;
       set(ref(db, path), chk.checked ? true : null);
     });
 
-    const nameSpan = document.createElement('span');
-    nameSpan.className = `attendee-name${isParent ? ' is-parent' : ''}`;
-    nameSpan.textContent = member;
+    const nm = document.createElement('span');
+    nm.className = `attendee-name${isParent ? ' is-parent' : ''}`;
+    nm.textContent = member;
 
-    row.appendChild(chk);
-    row.appendChild(nameSpan);
+    row.appendChild(chk); row.appendChild(nm);
     attendeesEl.appendChild(row);
   }
-
   card.appendChild(attendeesEl);
-  card.appendChild(totalBadge);
+
+  // ── Total / Boat cap badge ──
+  if (isBoat) {
+    const capBadge = document.createElement('div');
+    const full = totalCount >= boatCap;
+    capBadge.className = `boat-cap-badge ${full ? 'boat-cap-full' : 'boat-cap-ok'}`;
+    capBadge.textContent = full
+      ? `⛵ FULL — ${totalCount}/${boatCap} spots taken`
+      : `⛵ ${totalCount}/${boatCap} spots taken`;
+    card.appendChild(capBadge);
+  } else {
+    const totalBadge = document.createElement('div');
+    totalBadge.className = `card-total-badge${totalCount === 0 ? ' zero' : ''}`;
+    totalBadge.textContent = totalCount === 0 ? 'No one yet' : `${totalCount} going`;
+    card.appendChild(totalBadge);
+  }
 
   return card;
 }
 
-// Count total attendance across all families for a given attendance object
-function countTotalAttendance(attendance) {
+function countAttendance(attendance) {
   if (!attendance) return 0;
   return Object.values(attendance).filter(Boolean).length;
 }
 
-// Auto-resize textarea to fit content
-function autoResizeTextarea(el) {
+function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = el.scrollHeight + 'px';
 }
@@ -1144,51 +837,44 @@ function autoResizeTextarea(el) {
 // ─────────────────────────────────────────────
 // FIREBASE WRITE HELPERS
 // ─────────────────────────────────────────────
-
-// Update a single field on an activity
 function updateField(dayId, slotId, actId, field, value) {
-  const path = `fijiPlanner/${dayId}/${slotId}/activities/${actId}/${field}`;
-  set(ref(db, path), value);
+  set(ref(db, `fijiPlanner/${dayId}/${slotId}/activities/${actId}/${field}`), value);
 }
 
-// Add a new blank activity card
-window.addCard = function (dayId, slotId) {
+window.addCard = function(dayId, slotId, type) {
   const id = uid();
-  const newAct = {
-    id,
-    name:         'New Activity',
-    notes:        '',
-    link:         '',
-    needsBooking: false,
-    attendance:   {},
-    isPermanent:  false,
+  const defaults = {
+    [TYPE.ACTIVITY]: { name:'New Activity',      notes:'' },
+    [TYPE.DINNER]:   { name:'Dinner Suggestion',  notes:'Propose a dinner option…' },
+    [TYPE.BOAT]:     { name:'Boat Charter',       notes:'', boatCap:16 },
+    [TYPE.FREE]:     { name:'Own Thing',          notes:'' },
   };
-  set(ref(db, `fijiPlanner/${dayId}/${slotId}/activities/${id}`), newAct);
-  showToast('Activity added ✓');
+  const d = defaults[type] || defaults[TYPE.ACTIVITY];
+  set(ref(db, `fijiPlanner/${dayId}/${slotId}/activities/${id}`), {
+    id, name:d.name, notes:d.notes, link:'', needsBooking:false,
+    type, attendance:{}, isPermanent:false,
+    ...(d.boatCap ? { boatCap:d.boatCap } : {}),
+  });
+  showToast('Card added ✓');
 };
 
-// Delete an activity card
-function deleteCard(dayId, slotId, actId, actName) {
-  if (!confirm(`Delete "${actName}"?`)) return;
+function deleteCard(dayId, slotId, actId, name) {
+  if (!confirm(`Delete "${name}"?`)) return;
   remove(ref(db, `fijiPlanner/${dayId}/${slotId}/activities/${actId}`));
-  showToast('Activity removed');
+  showToast('Removed');
 }
 
 // ─────────────────────────────────────────────
-// INIT: check localStorage for saved family,
-// show welcome screen or jump straight to app
+// INIT
 // ─────────────────────────────────────────────
 function init() {
   const overlay = document.getElementById('loading-overlay');
   const saved   = localStorage.getItem('fijiFamily');
-
   setTimeout(() => {
     overlay.classList.add('fade-out');
     setTimeout(() => overlay.style.display = 'none', 400);
-
     if (saved && FAMILIES[saved]) {
       currentFamily = saved;
-      document.getElementById('family-select').value = saved;
       showApp();
     } else {
       document.getElementById('welcome-screen').style.display = 'flex';
