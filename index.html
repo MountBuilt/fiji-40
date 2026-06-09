@@ -1,197 +1,1202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fiji Fabulous 40 Planner</title>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', system-ui, sans-serif; background: #f8fafc; margin:0; padding:20px; }
-        .card { background: white; border-radius: 16px; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); padding: 20px; margin-bottom: 24px; }
-        .activity-card { border: 2px solid #e2e8f0; border-radius: 16px; padding: 16px; width: 280px; flex-shrink: 0; background: white; }
-        .activity-card:hover { border-color: #1e40af; }
-        .slot { display: flex; gap: 16px; overflow-x: auto; padding: 12px 0; scrollbar-width: thin; }
-        .selected { border-color: #1e40af; background: #eff6ff; }
-        .header { font-size: 1.5rem; font-weight: 700; color: #1e40af; margin: 20px 0 12px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fiji Fabulous 40 Planner</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Playfair Display (display) + Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --ocean:   #1a6b8a;   /* deep lagoon blue  */
+      --sand:    #f5ede0;   /* warm sand         */
+      --palm:    #2d7d4f;   /* tropical green    */
+      --coral:   #e05c3a;   /* sunset coral      */
+      --sky:     #e8f4f8;   /* pale sky fill     */
+      --dusk:    #7b4f3a;   /* warm dusk brown   */
+      --white:   #ffffff;
+      --text:    #1a1a1a;
+      --muted:   #6b7280;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--sand);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── WELCOME SCREEN ── */
+    #welcome-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #0d4f6e 0%, #1a6b8a 40%, #2d7d4f 100%);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Signature element: animated wave rings behind the title */
+    #welcome-screen::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: ripple 6s ease-in-out infinite;
+    }
+    #welcome-screen::after {
+      content: '';
+      position: absolute;
+      width: 900px; height: 900px;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: ripple 6s ease-in-out infinite 1.5s;
+    }
+
+    @keyframes ripple {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50%       { transform: translate(-50%, -50%) scale(1.05); opacity: 0.5; }
+    }
+
+    .welcome-card {
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 1.5rem;
+      padding: 2.5rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcome-palm {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .welcome-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .welcome-subtitle {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .welcome-label {
+      display: block;
+      text-align: left;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 0.5rem;
+    }
+
+    .welcome-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.15);
+      color: #ffffff;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      appearance: none;
+      cursor: pointer;
+      margin-bottom: 1.25rem;
+      outline: none;
+      transition: background 0.2s, border 0.2s;
+    }
+    .welcome-select:focus { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.5); }
+    .welcome-select option { background: #1a6b8a; color: white; }
+
+    .welcome-btn {
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: 0.75rem;
+      background: var(--coral);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .welcome-btn:hover  { background: #c94e2e; transform: translateY(-1px); }
+    .welcome-btn:active { transform: translateY(0); }
+
+    /* ── MAIN APP ── */
+    #app { display: none; }
+
+    .app-header {
+      background: linear-gradient(135deg, #0d4f6e 0%, #1a6b8a 100%);
+      color: white;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+
+    .app-header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 3vw, 1.3rem);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .app-header-subtitle {
+      font-size: 0.72rem;
+      opacity: 0.7;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .family-badge {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 2rem;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .family-badge:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── DAY SECTIONS ── */
+    .day-section {
+      margin: 1.25rem 0;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      background: white;
+      margin-left: 0.75rem;
+      margin-right: 0.75rem;
+    }
+
+    .day-header {
+      background: linear-gradient(90deg, var(--ocean) 0%, #236e8c 100%);
+      color: white;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+    }
+
+    .day-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .day-date {
+      font-size: 0.78rem;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── SLOT (Morning / Afternoon / Evening) ── */
+    .slot-section { border-top: 1px solid #f0f0f0; }
+
+    .slot-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .slot-emoji { font-size: 1rem; }
+
+    .slot-cards-row {
+      display: flex;
+      flex-direction: row;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding: 0 1.25rem 1rem;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .slot-cards-row::-webkit-scrollbar { display: none; }
+
+    /* Add card button */
+    .add-card-btn {
+      flex-shrink: 0;
+      width: 140px;
+      min-height: 140px;
+      border-radius: 0.875rem;
+      border: 2px dashed #d1d5db;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      color: #9ca3af;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .add-card-btn:hover { border-color: var(--ocean); color: var(--ocean); background: var(--sky); }
+    .add-card-btn-icon { font-size: 1.4rem; }
+
+    /* ── ACTIVITY CARD ── */
+    .activity-card {
+      flex-shrink: 0;
+      width: 200px;
+      border-radius: 0.875rem;
+      background: var(--sky);
+      border: 1.5px solid #dbeaf0;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+    .activity-card:hover { box-shadow: 0 4px 16px rgba(26,107,138,0.12); }
+
+    .activity-card.needs-booking {
+      border-color: var(--coral);
+      background: #fff7f5;
+    }
+
+    .activity-card.is-permanent {
+      background: #f0faf4;
+      border-color: #a7d9b8;
+    }
+
+    .card-top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.25rem;
+    }
+
+    .card-name {
+      font-weight: 600;
+      font-size: 0.875rem;
+      line-height: 1.3;
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      resize: none;
+      overflow: hidden;
+      cursor: text;
+    }
+    .card-name:focus {
+      background: rgba(255,255,255,0.7);
+      border-radius: 0.25rem;
+      padding: 0.15rem 0.25rem;
+    }
+
+    .card-delete-btn {
+      background: none;
+      border: none;
+      color: #d1d5db;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.15s;
+      flex-shrink: 0;
+    }
+    .card-delete-btn:hover { color: var(--coral); }
+
+    .card-notes {
+      font-size: 0.76rem;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      outline: none;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+      resize: none;
+      line-height: 1.4;
+      cursor: text;
+    }
+    .card-notes:focus {
+      background: rgba(255,255,255,0.7);
+      border-radius: 0.25rem;
+      padding: 0.15rem 0.25rem;
+      color: var(--text);
+    }
+    .card-notes::placeholder { color: #c0c9d0; }
+
+    .card-link-row {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .card-link-input {
+      font-size: 0.7rem;
+      color: var(--ocean);
+      background: transparent;
+      border: none;
+      outline: none;
+      flex: 1;
+      font-family: 'Inter', sans-serif;
+      min-width: 0;
+      text-decoration: none;
+      cursor: text;
+    }
+    .card-link-input::placeholder { color: #c0c9d0; }
+    .card-link-open {
+      font-size: 0.68rem;
+      color: var(--ocean);
+      text-decoration: none;
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+    .card-link-open:hover { opacity: 1; text-decoration: underline; }
+
+    .card-booking-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .booking-toggle {
+      appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 3px;
+      border: 1.5px solid #d1d5db;
+      background: white;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .booking-toggle:checked {
+      background: var(--coral);
+      border-color: var(--coral);
+    }
+    .booking-toggle:checked::after {
+      content: '✓';
+      position: absolute;
+      top: -1px; left: 1px;
+      font-size: 10px;
+      color: white;
+      font-weight: 700;
+    }
+    .booking-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+    .booking-label.required { color: var(--coral); font-weight: 600; }
+
+    /* Divider between booking toggle and attendees */
+    .card-divider {
+      height: 1px;
+      background: rgba(0,0,0,0.06);
+      margin: 0.1rem 0;
+    }
+
+    /* Attendee checkboxes */
+    .card-attendees { display: flex; flex-direction: column; gap: 0.3rem; }
+
+    .attendee-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .attendee-check {
+      appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 3px;
+      border: 1.5px solid #b0c8d4;
+      background: white;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .attendee-check:checked {
+      background: var(--palm);
+      border-color: var(--palm);
+    }
+    .attendee-check:checked::after {
+      content: '✓';
+      position: absolute;
+      top: -1px; left: 1px;
+      font-size: 10px;
+      color: white;
+      font-weight: 700;
+    }
+
+    .attendee-name {
+      font-size: 0.72rem;
+      color: var(--text);
+      flex: 1;
+    }
+    .attendee-name.is-parent { font-weight: 600; }
+
+    /* Group total badge */
+    .card-total-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--palm);
+      background: #e6f4ec;
+      border-radius: 2rem;
+      padding: 0.15rem 0.5rem;
+      align-self: flex-start;
+      margin-top: 0.1rem;
+    }
+    .card-total-badge.zero { color: #9ca3af; background: #f3f4f6; }
+
+    /* Live sync indicator */
+    .sync-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      display: inline-block;
+      margin-right: 0.35rem;
+      animation: pulse-green 2s ease-in-out infinite;
+    }
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+    .sync-dot.offline { background: #f87171; animation: none; }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(4rem);
+      background: #1a1a1a;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 2rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      z-index: 200;
+      transition: transform 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Loading overlay */
+    #loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(160deg, #0d4f6e 0%, #1a6b8a 40%, #2d7d4f 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      color: white;
+      gap: 1rem;
+      transition: opacity 0.4s ease;
+    }
+    #loading-overlay.fade-out { opacity: 0; pointer-events: none; }
+
+    .loading-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* Permanent card badge */
+    .permanent-badge {
+      font-size: 0.62rem;
+      background: #c4e8d0;
+      color: var(--palm);
+      border-radius: 2rem;
+      padding: 0.1rem 0.45rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      align-self: flex-start;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 480px) {
+      .day-section { margin-left: 0.5rem; margin-right: 0.5rem; }
+      .activity-card { width: 185px; }
+    }
+  </style>
 </head>
 <body>
-    <div class="max-w-6xl mx-auto">
-        <h1 class="text-4xl font-bold text-center mb-2">Fiji Fabulous 40 Planner</h1>
-        <p class="text-center text-gray-600 mb-8">June 21–27 • Shangri-La Yanuca Island</p>
 
-        <!-- Family Select -->
-        <div class="card">
-            <label class="block font-medium mb-2">Select Your Family (Parent):</label>
-            <select id="family-select" class="w-full p-4 border rounded-2xl text-lg"></select>
-        </div>
+<!-- ═══════════════════════════════════════════
+     LOADING OVERLAY
+═══════════════════════════════════════════ -->
+<div id="loading-overlay">
+  <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;">🌴 Fiji Fabulous 40</div>
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading planner…</div>
+</div>
 
-        <div id="main-content" class="hidden">
-            <button onclick="addActivity()" class="mb-6 bg-blue-700 text-white px-6 py-3 rounded-2xl font-medium">+ Add New Activity</button>
+<!-- ═══════════════════════════════════════════
+     WELCOME SCREEN
+═══════════════════════════════════════════ -->
+<div id="welcome-screen" style="display:none;">
+  <div class="welcome-card">
+    <div class="welcome-palm">🌴</div>
+    <div class="welcome-title">Fiji Fabulous 40<br>Planner</div>
+    <div class="welcome-subtitle">June 21–27 &nbsp;·&nbsp; Shangri-La Yanuca Island</div>
 
-            <div id="itinerary"></div>
-        </div>
+    <label class="welcome-label" for="family-select">Who are you?</label>
+    <select class="welcome-select" id="family-select">
+      <option value="" disabled selected>Select your family…</option>
+      <option value="dana-simon">Dana &amp; Simon (Heidi, Albert)</option>
+      <option value="carly-tim">Carly &amp; Tim (Addy, Teddy, Elsie)</option>
+      <option value="carly-matt">Carly &amp; Matt (Isla, Noah)</option>
+      <option value="jenny-lucas">Jenny &amp; Lucas (Neve, Remy, Bede)</option>
+      <option value="nat">Nat</option>
+      <option value="prue-clint">Prue &amp; Clint (Pip, Annabelle, Henry)</option>
+    </select>
+
+    <button class="welcome-btn" id="welcome-btn" onclick="enterApp()">Let's plan! 🎉</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════════ -->
+<div id="app">
+  <header class="app-header">
+    <div>
+      <div class="app-header-title">🌴 Fiji Fabulous 40</div>
+      <div class="app-header-subtitle">June 21–27 · Shangri-La Yanuca Island</div>
     </div>
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">
+        <span class="sync-dot" id="sync-dot"></span><span id="sync-label">Live</span>
+      </div>
+      <div class="family-badge" id="family-badge" onclick="switchFamily()" title="Switch family">
+        👨‍👩‍👧‍👦 <span id="family-name-header"></span>
+      </div>
+    </div>
+  </header>
 
-    <script>
-        // === REPLACE WITH YOUR FIREBASE CONFIG ===
+  <div id="days-container" style="padding-bottom:2rem;"></div>
+</div>
+
+<!-- Toast notification -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════════
+     FIREBASE SDK
+═══════════════════════════════════════════ -->
+<script type="module">
+// ─────────────────────────────────────────────
+// FIREBASE CONFIGURATION
+// These values identify your Firebase project.
+// The API key is a project identifier, not a
+// secret. Security is enforced via Database Rules
+// (set in the Firebase console) and authorised
+// domains, not by hiding this key.
+// ─────────────────────────────────────────────
+import { initializeApp }          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, update, remove, push, get }
+                                  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCq7TFqj_Tdod_JJZrbxYY7cu2gEbpJlcg",
-  authDomain: "fiji-40.firebaseapp.com",
-  databaseURL: "https://fiji-40-default-rtdb.firebaseio.com",
-  projectId: "fiji-40",
-  storageBucket: "fiji-40.firebasestorage.app",
+  apiKey:            "AIzaSyCq7TFqj_Tdod_JJZrbxYY7cu2gEbpJlcg",
+  authDomain:        "fiji-40.firebaseapp.com",
+  databaseURL:       "https://fiji-40-default-rtdb.firebaseio.com",
+  projectId:         "fiji-40",
+  storageBucket:     "fiji-40.firebasestorage.app",
   messagingSenderId: "742380008841",
-  appId: "1:742380008841:web:6c4ba42bfbdac4d90e9d58"
+  appId:             "1:742380008841:web:6c4ba42bfbdac4d90e9d58"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db          = getDatabase(firebaseApp);
+
+// ─────────────────────────────────────────────
+// FAMILY DEFINITIONS
+// Each family has parents and kids listed so
+// we can render the right checkboxes per card.
+// ─────────────────────────────────────────────
+const FAMILIES = {
+  "dana-simon":  { label: "Dana & Simon",   parents: ["Dana","Simon"],  kids: ["Heidi","Albert"] },
+  "carly-tim":   { label: "Carly & Tim",    parents: ["Carly","Tim"],   kids: ["Addy","Teddy","Elsie"] },
+  "carly-matt":  { label: "Carly & Matt",   parents: ["Carly","Matt"],  kids: ["Isla","Noah"] },
+  "jenny-lucas": { label: "Jenny & Lucas",  parents: ["Jenny","Lucas"], kids: ["Neve","Remy","Bede"] },
+  "nat":         { label: "Nat",            parents: ["Nat"],           kids: [] },
+  "prue-clint":  { label: "Prue & Clint",   parents: ["Prue","Clint"],  kids: ["Pip","Annabelle","Henry"] },
+};
+
+// All family members across all families, used to calculate total group attendance per card
+const ALL_MEMBERS = Object.values(FAMILIES).flatMap(f => [...f.parents, ...f.kids]);
+// Deduplicate (two Carlys but different families — we key attendance by familyId+name)
+// Attendance keys are stored as "familyId__memberName"
+const ALL_ATTENDANCE_KEYS = Object.entries(FAMILIES).flatMap(([fid, f]) =>
+  [...f.parents, ...f.kids].map(m => `${fid}__${m}`)
+);
+
+// ─────────────────────────────────────────────
+// DAYS & SLOTS
+// ─────────────────────────────────────────────
+const DAYS = [
+  { id: "jun21", label: "Saturday", date: "21 June" },
+  { id: "jun22", label: "Sunday",   date: "22 June" },
+  { id: "jun23", label: "Monday",   date: "23 June" },
+  { id: "jun24", label: "Tuesday",  date: "24 June" },
+  { id: "jun25", label: "Wednesday",date: "25 June" },
+  { id: "jun26", label: "Thursday", date: "26 June" },
+  { id: "jun27", label: "Friday",   date: "27 June" },
+];
+
+const SLOTS = [
+  { id: "morning",   label: "Morning",   emoji: "🌅" },
+  { id: "afternoon", label: "Afternoon", emoji: "☀️" },
+  { id: "evening",   label: "Evening",   emoji: "🌙" },
+];
+
+// Permanent cards shown in every slot (non-deletable)
+const PERMANENT_CARDS = [
+  { id: "own-thing", name: "Own Thing / Free Time", notes: "Do your own thing 🏖️", isPermanent: true },
+  { id: "kids-club", name: "Kids Club",              notes: "Shangri-La supervised kids activities", isPermanent: true },
+];
+
+// ─────────────────────────────────────────────
+// SEED DATA
+// Pre-populated activities for each day/slot.
+// These are written to Firebase only once on
+// first load — after that, Firebase is the
+// source of truth and users can edit freely.
+// ─────────────────────────────────────────────
+const SEED_ACTIVITIES = {
+  jun21: {
+    morning:   [ { name: "Arrivals & Check-in",     notes: "Settle in, explore the resort 🏝️",         needsBooking: false } ],
+    afternoon: [ { name: "Aqua Park",                notes: "Inflatable water park in the lagoon 🤿",    needsBooking: false },
+                 { name: "Beach Volleyball",         notes: "Resort beach court",                         needsBooking: false } ],
+    evening:   [ { name: "Welcome Dinner",           notes: "Group dinner — toast to the Fab 40s! 🥂",   needsBooking: true  },
+                 { name: "Sunset Cocktails",         notes: "Bar by the beach",                           needsBooking: false } ],
+  },
+  jun22: {
+    morning:   [ { name: "Snorkelling",              notes: "Coral reef off the beach 🐠",                needsBooking: false },
+                 { name: "Kayaking",                 notes: "Double and single kayaks available",          needsBooking: false } ],
+    afternoon: [ { name: "Jet Skis",                 notes: "Book through resort watersports desk 🚤",    needsBooking: true  },
+                 { name: "Swim & Relax",             notes: "Main pool or beach",                         needsBooking: false } ],
+    evening:   [ { name: "Backyard Grill Night",     notes: "BBQ on the beach — BYO drinks 🍺",           needsBooking: false },
+                 { name: "Kids Movie Night",         notes: "Resort kids lounge",                         needsBooking: false } ],
+  },
+  jun23: {
+    morning:   [ { name: "Sigatoka River Safari",   notes: "Half-day tour — book through concierge 🛶",  needsBooking: true  },
+                 { name: "Tennis",                   notes: "Resort courts (racquets available)",         needsBooking: false } ],
+    afternoon: [ { name: "Mini Golf",                notes: "18-hole course on resort grounds ⛳",        needsBooking: false },
+                 { name: "Pool Floats & Chill",      notes: "Grab a float and relax ☀️",                 needsBooking: false } ],
+    evening:   [ { name: "Cultural Dinner",          notes: "Fijian lovo feast & meke performance 🎶",   needsBooking: true  } ],
+  },
+  jun24: {
+    morning:   [ { name: "Guided Hike",              notes: "Resort trails through tropical gardens 🌿",  needsBooking: false },
+                 { name: "Beach Cricket",            notes: "Bat and ball on the beach 🏏",               needsBooking: false } ],
+    afternoon: [ { name: "Aqua Park",                notes: "Second go at the inflatable lagoon park",    needsBooking: false },
+                 { name: "Stand-Up Paddleboarding",  notes: "Book through watersports desk 🏄",           needsBooking: true  } ],
+    evening:   [ { name: "Group Dinner (Restaurant)",notes: "Main resort restaurant — reservation needed",needsBooking: true  },
+                 { name: "Card Night",               notes: "Bring your deck 🃏",                         needsBooking: false } ],
+  },
+  jun25: {
+    morning:   [ { name: "Spa Morning",              notes: "Treatments for the adults 💆 — book ahead",  needsBooking: true  },
+                 { name: "Cooking Class",            notes: "Learn a Fijian dish with the resort chef",   needsBooking: true  } ],
+    afternoon: [ { name: "Village Visit",            notes: "Local Fijian village tour — concierge",      needsBooking: true  },
+                 { name: "Lazy Beach Day",           notes: "Cold drinks, sun loungers, do nothing 🍹",   needsBooking: false } ],
+    evening:   [ { name: "Backyard Grill Night 2",   notes: "Round two of the beach BBQ 🔥",              needsBooking: false } ],
+  },
+  jun26: {
+    morning:   [ { name: "Snorkelling Trip",         notes: "Boat trip to the outer reef — book concierge",needsBooking: true  },
+                 { name: "Tennis Round Robin",       notes: "Group doubles tournament 🎾",                needsBooking: false } ],
+    afternoon: [ { name: "Jet Skis (Round 2)",       notes: "Watersports desk 🚤",                        needsBooking: true  },
+                 { name: "Pool Games",               notes: "Diving contests, water polo",                needsBooking: false } ],
+    evening:   [ { name: "Farewell Dinner",          notes: "Special send-off dinner — book ahead 🥂",    needsBooking: true  },
+                 { name: "Bonfire & Drinks",         notes: "Beach bonfire to close out the trip 🔥",     needsBooking: false } ],
+  },
+  jun27: {
+    morning:   [ { name: "Final Swim",               notes: "Last splash before check-out 🌊",            needsBooking: false },
+                 { name: "Breakfast Together",       notes: "Group brekkie before the goodbyes",          needsBooking: false } ],
+    afternoon: [ { name: "Check-out & Transfers",   notes: "Safe travels everyone! ✈️",                  needsBooking: false } ],
+    evening:   [ { name: "Travel Day",               notes: "Heading home",                               needsBooking: false } ],
+  },
+};
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let currentFamily   = null;   // e.g. "dana-simon"
+let plannerData     = {};     // local mirror of Firebase /fijiPlanner
+let dbListener      = null;   // Firebase unsubscribe handle
+
+// ─────────────────────────────────────────────
+// UTILITY: generate a short random ID
+// ─────────────────────────────────────────────
+function uid() {
+  return Math.random().toString(36).slice(2, 9);
+}
+
+// ─────────────────────────────────────────────
+// UTILITY: show a brief toast message
+// ─────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ─────────────────────────────────────────────
+// WELCOME SCREEN LOGIC
+// ─────────────────────────────────────────────
+window.enterApp = function () {
+  const sel = document.getElementById('family-select').value;
+  if (!sel) { showToast('Please select your family first.'); return; }
+  currentFamily = sel;
+  localStorage.setItem('fijiFamily', sel);
+  showApp();
+};
+
+window.switchFamily = function () {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('welcome-screen').style.display = 'flex';
+  document.getElementById('family-select').value = currentFamily || '';
+};
+
+function showApp() {
+  document.getElementById('welcome-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  const fam = FAMILIES[currentFamily];
+  document.getElementById('family-name-header').textContent = fam.label;
+  attachFirebaseListener();
+}
+
+// ─────────────────────────────────────────────
+// FIREBASE: attach a realtime listener on
+// /fijiPlanner — whenever data changes anywhere,
+// we get the full snapshot and re-render.
+// ─────────────────────────────────────────────
+function attachFirebaseListener() {
+  const plannerRef = ref(db, 'fijiPlanner');
+
+  if (dbListener) dbListener();   // detach old listener if switching families
+
+  dbListener = onValue(plannerRef, (snapshot) => {
+    setSyncStatus(true);
+    const data = snapshot.val();
+
+    if (!data || Object.keys(data).length === 0) {
+      // First load — seed the database with our initial activities
+      seedDatabase().then(() => {});
+    } else {
+      plannerData = data;
+      renderPlanner();
+    }
+  }, (error) => {
+    console.error('Firebase error:', error);
+    setSyncStatus(false);
+  });
+}
+
+function setSyncStatus(online) {
+  const dot   = document.getElementById('sync-dot');
+  const label = document.getElementById('sync-label');
+  if (online) {
+    dot.classList.remove('offline');
+    label.textContent = 'Live';
+  } else {
+    dot.classList.add('offline');
+    label.textContent = 'Offline';
+  }
+}
+
+// ─────────────────────────────────────────────
+// SEED: write initial activities to Firebase
+// This only runs when the database is empty.
+// Each activity gets a Firebase push ID as key.
+// ─────────────────────────────────────────────
+async function seedDatabase() {
+  const writes = {};
+  for (const day of DAYS) {
+    writes[day.id] = {};
+    for (const slot of SLOTS) {
+      writes[day.id][slot.id] = { activities: {} };
+      const seeded = SEED_ACTIVITIES[day.id]?.[slot.id] || [];
+      for (const act of seeded) {
+        const id = uid();
+        writes[day.id][slot.id].activities[id] = {
+          id,
+          name:         act.name,
+          notes:        act.notes || '',
+          link:         '',
+          needsBooking: act.needsBooking || false,
+          attendance:   {},
+          isPermanent:  false,
         };
+      }
+    }
+  }
+  await set(ref(db, 'fijiPlanner'), writes);
+}
 
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const ref = db.ref('fijiPlanner');
+// ─────────────────────────────────────────────
+// RENDER: build the full planner UI from
+// plannerData. Called every time Firebase
+// sends an update.
+// ─────────────────────────────────────────────
+function renderPlanner() {
+  const container = document.getElementById('days-container');
 
-        const families = [
-            {id: "dana", name: "Dana & Simon", members: ["Dana", "Simon", "Heidi", "Albert"]},
-            {id: "carly-tim", name: "Carly & Tim", members: ["Carly", "Tim", "Addy", "Teddy", "Elsie"]},
-            {id: "carly-matt", name: "Carly & Matt", members: ["Carly", "Matt", "Isla", "Noah"]},
-            {id: "jenny", name: "Jenny & Lucas", members: ["Jenny", "Lucas", "Neve", "Remy", "Bede"]},
-            {id: "nat", name: "Nat", members: ["Nat"]},
-            {id: "prue", name: "Prue & Clint", members: ["Prue", "Clint", "Pip", "Annabelle", "Henry"]}
-        ];
+  // We preserve scroll position so the page doesn't jump on live updates
+  const scrollY = window.scrollY;
 
-        let currentFamily = null;
-        let data = { days: {} };
+  container.innerHTML = '';
 
-        // Populate family select
-        function populateFamilies() {
-            const select = document.getElementById("family-select");
-            families.forEach(fam => {
-                const opt = document.createElement("option");
-                opt.value = fam.id;
-                opt.textContent = fam.name;
-                select.appendChild(opt);
-            });
-            select.onchange = () => {
-                currentFamily = families.find(f => f.id === select.value);
-                document.getElementById("main-content").classList.remove("hidden");
-            };
-        }
+  for (const day of DAYS) {
+    const dayEl = document.createElement('div');
+    dayEl.className = 'day-section';
 
-        function renderItinerary() {
-            const container = document.getElementById("itinerary");
-            container.innerHTML = "";
+    dayEl.innerHTML = `
+      <div class="day-header">
+        <span class="day-name">${day.label}</span>
+        <span class="day-date">${day.date}</span>
+      </div>
+    `;
 
-            const dates = Object.keys(data.days).sort();
-            dates.forEach(date => {
-                const dayData = data.days[date];
-                let html = `<div class="card"><div class="header">${date}</div>`;
+    for (const slot of SLOTS) {
+      const slotEl = document.createElement('div');
+      slotEl.className = 'slot-section';
 
-                ["Morning", "Afternoon", "Evening"].forEach(slot => {
-                    html += `<div class="header">${slot}</div><div class="slot">`;
-                    
-                    // Own Thing + Kids Club
-                    html += createSpecialCard(date, slot, "Own Thing / Free Time", true);
-                    html += createSpecialCard(date, slot, "Kids Club", false);
+      slotEl.innerHTML = `
+        <div class="slot-header">
+          <span class="slot-emoji">${slot.emoji}</span>
+          <span>${slot.label}</span>
+        </div>
+      `;
 
-                    // Regular activities
-                    if (dayData[slot]) {
-                        Object.keys(dayData[slot]).forEach(actId => {
-                            const act = dayData[slot][actId];
-                            html += createActivityCard(date, slot, actId, act);
-                        });
-                    }
-                    html += `</div>`;
-                });
-                html += `</div>`;
-                container.innerHTML += html;
-            });
-        }
+      const rowEl = document.createElement('div');
+      rowEl.className = 'slot-cards-row';
 
-        function createSpecialCard(date, slot, label, isOwnThing) {
-            const key = isOwnThing ? 'ownThing' : 'kidsClub';
-            const checked = (data.days[date]?.[slot]?.[key] || []).includes(currentFamily?.id) ? "checked" : "";
-            return `
-                <div class="activity-card flex flex-col justify-between">
-                    <div class="font-semibold">${label}</div>
-                    <label class="mt-4 flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" ${checked} onchange="toggleSpecial('${date}', '${slot}', '${key}')">
-                        <span>My family</span>
-                    </label>
-                </div>`;
-        }
+      // Regular activities from Firebase
+      const activities = plannerData[day.id]?.[slot.id]?.activities || {};
+      for (const [actId, act] of Object.entries(activities)) {
+        rowEl.appendChild(buildCard(day.id, slot.id, actId, act, false));
+      }
 
-        function createActivityCard(date, slot, actId, act) {
-            const attendees = act.attendees || [];
-            const familyAttending = attendees.filter(m => currentFamily.members.includes(m)).length;
-            const isChecked = familyAttending > 0;
+      // Permanent cards (Own Thing / Kids Club) — always shown, not from Firebase
+      for (const perm of PERMANENT_CARDS) {
+        rowEl.appendChild(buildCard(day.id, slot.id, perm.id, {
+          ...perm,
+          attendance:   plannerData[day.id]?.[slot.id]?.permanent?.[perm.id]?.attendance || {},
+          needsBooking: false,
+        }, true));
+      }
 
-            let html = `<div class="activity-card ${isChecked ? 'selected' : ''}">`;
-            html += `<div class="font-semibold mb-2">${act.name}</div>`;
-            if (act.link) html += `<a href="${act.link}" target="_blank" class="text-blue-600 text-sm block mb-2">🔗 More Info</a>`;
-            html += `<div class="text-xs mb-3 ${act.needsBooking ? 'text-red-600' : 'text-green-600'}">${act.needsBooking ? 'Needs Booking' : 'No Booking Needed'}</div>`;
+      // Add card button
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-card-btn';
+      addBtn.innerHTML = `<span class="add-card-btn-icon">＋</span><span>Add activity</span>`;
+      addBtn.onclick = () => addCard(day.id, slot.id);
+      rowEl.appendChild(addBtn);
 
-            currentFamily.members.forEach(member => {
-                const checked = attendees.includes(member) ? "checked" : "";
-                html += `
-                    <label class="flex items-center gap-2 text-sm mb-1 cursor-pointer">
-                        <input type="checkbox" ${checked} onchange="toggleAttendee('${date}', '${slot}', '${actId}', '${member}')">
-                        ${member}
-                    </label>`;
-            });
-            html += `<button onclick="editActivity('${date}', '${slot}', '${actId}')" class="text-xs text-gray-500 mt-3">Edit</button>`;
-            html += `</div>`;
-            return html;
-        }
+      slotEl.appendChild(rowEl);
+      dayEl.appendChild(slotEl);
+    }
 
-        function toggleAttendee(date, slot, actId, member) {
-            ref.child(`days/${date}/${slot}/${actId}/attendees`).transaction(att => {
-                att = att || [];
-                if (att.includes(member)) return att.filter(m => m !== member);
-                else return [...att, member];
-            });
-        }
+    container.appendChild(dayEl);
+  }
 
-        function toggleSpecial(date, slot, key) {
-            ref.child(`days/${date}/${slot}/${key}`).transaction(list => {
-                list = list || [];
-                if (list.includes(currentFamily.id)) return list.filter(id => id !== currentFamily.id);
-                else return [...list, currentFamily.id];
-            });
-        }
+  window.scrollTo(0, scrollY);
+}
 
-        function addActivity() {
-            const date = prompt("Date (e.g. June 21):");
-            const slot = prompt("Slot (Morning / Afternoon / Evening):");
-            const name = prompt("Activity name:");
-            if (!date || !slot || !name) return;
+// ─────────────────────────────────────────────
+// BUILD CARD: creates a single activity card
+// element. isPermanent = true for Own Thing /
+// Kids Club cards.
+// ─────────────────────────────────────────────
+function buildCard(dayId, slotId, actId, act, isPermanent) {
+  const fam     = FAMILIES[currentFamily];
+  const members = [...fam.parents, ...fam.kids];
 
-            const link = prompt("Link (optional):");
-            const needsBooking = confirm("Does this need booking?");
+  const card = document.createElement('div');
+  card.className = `activity-card${act.needsBooking ? ' needs-booking' : ''}${isPermanent ? ' is-permanent' : ''}`;
+  card.dataset.actId = actId;
 
-            const actData = { name, link: link || "", needsBooking, attendees: [] };
+  // ── Card top row: name + delete button ──
+  const topRow = document.createElement('div');
+  topRow.className = 'card-top-row';
 
-            ref.child(`days/${date}/${slot}`).push(actData);
-        }
+  const nameEl = document.createElement('textarea');
+  nameEl.className = 'card-name';
+  nameEl.value = act.name;
+  nameEl.rows = 1;
+  nameEl.placeholder = 'Activity name';
+  autoResizeTextarea(nameEl);
+  if (!isPermanent) {
+    nameEl.addEventListener('change', () => {
+      updateField(dayId, slotId, actId, 'name', nameEl.value);
+    });
+    nameEl.addEventListener('input', () => autoResizeTextarea(nameEl));
+  } else {
+    nameEl.readOnly = true;
+  }
 
-        function editActivity(date, slot, actId) {
-            const newName = prompt("New name:");
-            if (newName) {
-                ref.child(`days/${date}/${slot}/${actId}/name`).set(newName);
-            }
-        }
+  topRow.appendChild(nameEl);
 
-        // Real-time listener
-        ref.on('value', snapshot => {
-            data = snapshot.val() || { days: {} };
-            renderItinerary();
-        });
+  if (!isPermanent) {
+    const delBtn = document.createElement('button');
+    delBtn.className = 'card-delete-btn';
+    delBtn.title = 'Delete activity';
+    delBtn.innerHTML = '✕';
+    delBtn.onclick = () => deleteCard(dayId, slotId, actId, act.name);
+    topRow.appendChild(delBtn);
+  } else {
+    const badge = document.createElement('span');
+    badge.className = 'permanent-badge';
+    badge.textContent = 'Always';
+    topRow.appendChild(badge);
+  }
 
-        // Init
-        window.onload = () => {
-            populateFamilies();
-        };
-    </script>
+  card.appendChild(topRow);
+
+  // ── Notes ──
+  const notesEl = document.createElement('textarea');
+  notesEl.className = 'card-notes';
+  notesEl.value = act.notes || '';
+  notesEl.rows = 2;
+  notesEl.placeholder = 'Add notes…';
+  autoResizeTextarea(notesEl);
+  if (!isPermanent) {
+    notesEl.addEventListener('change', () => {
+      updateField(dayId, slotId, actId, 'notes', notesEl.value);
+    });
+    notesEl.addEventListener('input', () => autoResizeTextarea(notesEl));
+  } else {
+    notesEl.readOnly = true;
+  }
+  card.appendChild(notesEl);
+
+  // ── Link ──
+  if (!isPermanent) {
+    const linkRow = document.createElement('div');
+    linkRow.className = 'card-link-row';
+
+    const linkInput = document.createElement('input');
+    linkInput.className = 'card-link-input';
+    linkInput.type = 'url';
+    linkInput.placeholder = 'Add link…';
+    linkInput.value = act.link || '';
+    linkInput.addEventListener('change', () => {
+      updateField(dayId, slotId, actId, 'link', linkInput.value);
+    });
+
+    linkRow.appendChild(linkInput);
+
+    if (act.link) {
+      const openLink = document.createElement('a');
+      openLink.className = 'card-link-open';
+      openLink.href = act.link;
+      openLink.target = '_blank';
+      openLink.rel = 'noopener noreferrer';
+      openLink.textContent = '↗';
+      linkRow.appendChild(openLink);
+    }
+    card.appendChild(linkRow);
+  }
+
+  // ── Needs Booking toggle ──
+  if (!isPermanent) {
+    const bookRow = document.createElement('div');
+    bookRow.className = 'card-booking-row';
+
+    const bookCheck = document.createElement('input');
+    bookCheck.type = 'checkbox';
+    bookCheck.className = 'booking-toggle';
+    bookCheck.checked = !!act.needsBooking;
+    bookCheck.addEventListener('change', () => {
+      updateField(dayId, slotId, actId, 'needsBooking', bookCheck.checked);
+      card.classList.toggle('needs-booking', bookCheck.checked);
+      bookLabel.className = `booking-label${bookCheck.checked ? ' required' : ''}`;
+      bookLabel.textContent = bookCheck.checked ? 'Needs booking!' : 'Needs booking?';
+    });
+
+    const bookLabel = document.createElement('label');
+    bookLabel.className = `booking-label${act.needsBooking ? ' required' : ''}`;
+    bookLabel.textContent = act.needsBooking ? 'Needs booking!' : 'Needs booking?';
+
+    bookRow.appendChild(bookCheck);
+    bookRow.appendChild(bookLabel);
+    card.appendChild(bookRow);
+  }
+
+  // ── Divider ──
+  const div = document.createElement('div');
+  div.className = 'card-divider';
+  card.appendChild(div);
+
+  // ── Attendee checkboxes (current family members only) ──
+  const attendeesEl = document.createElement('div');
+  attendeesEl.className = 'card-attendees';
+
+  // Group total across ALL families
+  const totalAttending = countTotalAttendance(act.attendance);
+  const totalBadge = document.createElement('div');
+  totalBadge.className = `card-total-badge${totalAttending === 0 ? ' zero' : ''}`;
+  totalBadge.textContent = totalAttending === 0 ? 'No one yet' : `${totalAttending} attending`;
+
+  // Parents first, then kids
+  const allMembers = [...fam.parents, ...fam.kids];
+  for (const member of allMembers) {
+    const attendKey = `${currentFamily}__${member}`;
+    const isChecked = !!(act.attendance && act.attendance[attendKey]);
+    const isParent  = fam.parents.includes(member);
+
+    const row = document.createElement('div');
+    row.className = 'attendee-row';
+
+    const chk = document.createElement('input');
+    chk.type = 'checkbox';
+    chk.className = 'attendee-check';
+    chk.checked = isChecked;
+    chk.dataset.key = attendKey;
+
+    chk.addEventListener('change', () => {
+      const path = isPermanent
+        ? `fijiPlanner/${dayId}/${slotId}/permanent/${actId}/attendance/${attendKey}`
+        : `fijiPlanner/${dayId}/${slotId}/activities/${actId}/attendance/${attendKey}`;
+      set(ref(db, path), chk.checked ? true : null);
+    });
+
+    const nameSpan = document.createElement('span');
+    nameSpan.className = `attendee-name${isParent ? ' is-parent' : ''}`;
+    nameSpan.textContent = member;
+
+    row.appendChild(chk);
+    row.appendChild(nameSpan);
+    attendeesEl.appendChild(row);
+  }
+
+  card.appendChild(attendeesEl);
+  card.appendChild(totalBadge);
+
+  return card;
+}
+
+// Count total attendance across all families for a given attendance object
+function countTotalAttendance(attendance) {
+  if (!attendance) return 0;
+  return Object.values(attendance).filter(Boolean).length;
+}
+
+// Auto-resize textarea to fit content
+function autoResizeTextarea(el) {
+  el.style.height = 'auto';
+  el.style.height = el.scrollHeight + 'px';
+}
+
+// ─────────────────────────────────────────────
+// FIREBASE WRITE HELPERS
+// ─────────────────────────────────────────────
+
+// Update a single field on an activity
+function updateField(dayId, slotId, actId, field, value) {
+  const path = `fijiPlanner/${dayId}/${slotId}/activities/${actId}/${field}`;
+  set(ref(db, path), value);
+}
+
+// Add a new blank activity card
+window.addCard = function (dayId, slotId) {
+  const id = uid();
+  const newAct = {
+    id,
+    name:         'New Activity',
+    notes:        '',
+    link:         '',
+    needsBooking: false,
+    attendance:   {},
+    isPermanent:  false,
+  };
+  set(ref(db, `fijiPlanner/${dayId}/${slotId}/activities/${id}`), newAct);
+  showToast('Activity added ✓');
+};
+
+// Delete an activity card
+function deleteCard(dayId, slotId, actId, actName) {
+  if (!confirm(`Delete "${actName}"?`)) return;
+  remove(ref(db, `fijiPlanner/${dayId}/${slotId}/activities/${actId}`));
+  showToast('Activity removed');
+}
+
+// ─────────────────────────────────────────────
+// INIT: check localStorage for saved family,
+// show welcome screen or jump straight to app
+// ─────────────────────────────────────────────
+function init() {
+  const overlay = document.getElementById('loading-overlay');
+  const saved   = localStorage.getItem('fijiFamily');
+
+  setTimeout(() => {
+    overlay.classList.add('fade-out');
+    setTimeout(() => overlay.style.display = 'none', 400);
+
+    if (saved && FAMILIES[saved]) {
+      currentFamily = saved;
+      document.getElementById('family-select').value = saved;
+      showApp();
+    } else {
+      document.getElementById('welcome-screen').style.display = 'flex';
+    }
+  }, 800);
+}
+
+init();
+</script>
 </body>
 </html>
