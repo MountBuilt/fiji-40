@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
-    textarea { color: #1a1a1a !important; -webkit-text-fill-color: #1a1a1a !important; }
     :root {
       --ocean:      #1a6b8a;
       --ocean-dark: #0d4f6e;
@@ -166,23 +165,23 @@
     /* Card top row */
     .card-top-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.25rem; }
     .card-name {
-      font-weight: 600; font-size: 0.875rem; line-height: 1.3; flex: 1;
-      background: transparent; border: none; outline: none; color: #1a1a1a !important;
-      padding: 0; font-family: 'Inter',sans-serif; resize: none; overflow: hidden; cursor: text;
-      -webkit-text-fill-color: #1a1a1a !important;
+      font-weight: 600; font-size: 0.875rem; line-height: 1.3;
+      color: #1a1a1a; min-height: 1.2em; word-break: break-word;
+      outline: none; border-radius: 0.25rem; padding: 0.1rem 0;
     }
-    .card-name:focus { background: rgba(255,255,255,0.8); border-radius: 0.25rem; padding: 0.1rem 0.2rem; }
-    .card-name[readonly] { cursor: default; }
+    .card-name[contenteditable="true"]:hover { background: rgba(255,255,255,0.6); padding: 0.1rem 0.2rem; }
+    .card-name[contenteditable="true"]:focus { background: rgba(255,255,255,0.9); padding: 0.1rem 0.2rem; }
+    .card-name:empty:before { content: attr(data-placeholder); color: #aaa; font-weight: 400; }
     .card-delete-btn { background: none; border: none; color: #d1d5db; font-size: 1rem; cursor: pointer; padding: 0; line-height: 1; transition: color 0.15s; flex-shrink: 0; }
     .card-delete-btn:hover { color: var(--coral); }
     .card-notes {
-      font-size: 0.74rem; color: #4b5563 !important; background: transparent; border: none; outline: none;
-      width: 100%; font-family: 'Inter',sans-serif; resize: none; line-height: 1.4; cursor: text;
-      -webkit-text-fill-color: #4b5563 !important;
+      font-size: 0.74rem; color: #4b5563; line-height: 1.5;
+      min-height: 1em; word-break: break-word; white-space: pre-wrap;
+      outline: none; border-radius: 0.25rem; padding: 0.1rem 0;
     }
-    .card-notes:focus { background: rgba(255,255,255,0.8); border-radius: 0.25rem; padding: 0.1rem 0.2rem; color: #1a1a1a !important; -webkit-text-fill-color: #1a1a1a !important; }
-    .card-notes::placeholder { color: #c0c9d0; }
-    .card-notes[readonly] { cursor: default; }
+    .card-notes[contenteditable="true"]:hover { background: rgba(255,255,255,0.6); padding: 0.1rem 0.2rem; }
+    .card-notes[contenteditable="true"]:focus { background: rgba(255,255,255,0.9); padding: 0.1rem 0.2rem; color: #1a1a1a; }
+    .card-notes:empty:before { content: attr(data-placeholder); color: #aaa; }
 
     /* Link row */
     .card-link-row { display: flex; align-items: center; gap: 0.3rem; }
@@ -675,17 +674,13 @@ function buildCard(dayId, slotId, actId, act, isPermanent) {
   const topRow = document.createElement('div');
   topRow.className = 'card-top-row';
 
-  const nameEl = document.createElement('textarea');
+  const nameEl = document.createElement('div');
   nameEl.className = 'card-name';
-  nameEl.value = act.name;
-  nameEl.rows  = 1;
-  nameEl.placeholder = 'Activity name';
-  autoResize(nameEl);
-  if (isPermanent) {
-    nameEl.readOnly = true;
-  } else {
-    nameEl.addEventListener('change', () => updateField(dayId, slotId, actId, 'name', nameEl.value));
-    nameEl.addEventListener('input',  () => autoResize(nameEl));
+  nameEl.textContent = act.name || '';
+  if (!isPermanent) {
+    nameEl.contentEditable = 'true';
+    nameEl.setAttribute('data-placeholder', 'Activity name');
+    nameEl.addEventListener('blur', () => updateField(dayId, slotId, actId, 'name', nameEl.textContent.trim()));
   }
   topRow.appendChild(nameEl);
 
@@ -700,25 +695,20 @@ function buildCard(dayId, slotId, actId, act, isPermanent) {
   card.appendChild(topRow);
 
   // ── Notes ──
-  const notesEl = document.createElement('textarea');
-  notesEl.className   = 'card-notes';
-  notesEl.value       = act.notes || '';
-  notesEl.rows        = 3;
-  notesEl.placeholder = isPermanent ? 'Add a note or propose something…' : 'Notes, details, pricing…';
-  autoResize(notesEl);
+  const notesEl = document.createElement('div');
+  notesEl.className = 'card-notes';
+  notesEl.textContent = act.notes || '';
 
-  // Own Thing permanent card — notes are editable (people write their own plans)
   if (isPermanent && actId === PERM_OWN_THING.id) {
-    notesEl.readOnly = false;
-    notesEl.addEventListener('change', () => {
-      set(ref(db, `fijiPlanner/${dayId}/${slotId}/permanent/${actId}/notes`), notesEl.value);
+    notesEl.contentEditable = 'true';
+    notesEl.setAttribute('data-placeholder', 'Add a note or propose something…');
+    notesEl.addEventListener('blur', () => {
+      set(ref(db, `fijiPlanner/${dayId}/${slotId}/permanent/${actId}/notes`), notesEl.textContent.trim());
     });
-    notesEl.addEventListener('input', () => autoResize(notesEl));
-  } else if (isPermanent) {
-    notesEl.readOnly = true;
-  } else {
-    notesEl.addEventListener('change', () => updateField(dayId, slotId, actId, 'notes', notesEl.value));
-    notesEl.addEventListener('input',  () => autoResize(notesEl));
+  } else if (!isPermanent) {
+    notesEl.contentEditable = 'true';
+    notesEl.setAttribute('data-placeholder', 'Notes, details, pricing…');
+    notesEl.addEventListener('blur', () => updateField(dayId, slotId, actId, 'notes', notesEl.textContent.trim()));
   }
   card.appendChild(notesEl);
 
